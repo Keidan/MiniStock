@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+  xmlns:tools="http://schemas.android.com/tools"
+  android:id="@+id/content"
+  android:layout_width="match_parent"
+  android:layout_height="match_parent"
+  android:layout_marginBottom="@dimen/activity_scan_content_horizontal_margin"
+  android:layout_marginLeft="@dimen/activity_scan_content_vertical_margin"
+  android:layout_marginRight="@dimen/activity_scan_content_vertical_margin"
+  android:layout_marginTop="@dimen/activity_scan_content_horizontal_margin"
+  android:animateLayoutChanges="true"
+  android:gravity="center"
+  android:orientation="vertical"
+  tools:context=".ui.activities.ScanActivity">
+
+  <TextView
+    android:id="@+id/tvCode"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginBottom="@dimen/activity_scan_items_layout_margin_bottom"
+    android:layout_marginEnd="@dimen/activity_scan_items_layout_margin_end"
+    android:layout_marginStart="@dimen/activity_scan_items_layout_margin_start"
+    android:layout_marginTop="@dimen/activity_scan_code_layout_margin_top"
+    android:background="@drawable/rounded_corner_button"
+    android:padding="@dimen/activity_scan_items_padding"
+    android:text="@string/qrcode_hint"
+    android:textAlignment="center" />
+
+  <RelativeLayout
+    android:id="@+id/surfaceparent"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginEnd="@dimen/activity_scan_items_layout_margin_end"
+    android:layout_marginStart="@dimen/activity_scan_items_layout_margin_start">
+
+    <RelativeLayout
+      android:layout_width="match_parent"
+      android:layout_height="240dp"
+      android:foreground="@mipmap/control_point">
+
+      <SurfaceView
+        android:id="@+id/cameraPreview"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+      </SurfaceView>
+    </RelativeLayout>
+
+    <ImageView
+      android:layout_width="match_parent"
+      android:layout_height="240dp"
+      android:layout_alignParentStart="true"
+      android:layout_alignParentTop="true"
+      android:adjustViewBounds="true"
+      android:contentDescription="@null"
+      android:scaleType="fitXY"
+      android:src="@drawable/control_point_preview_shape" />
+  </RelativeLayout>
+</LinearLayout>
+
+

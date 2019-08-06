@@ -1,0 +1,60 @@
+apply plugin: 'com.android.application'
+
+ext {
+    supportVersion = "28.0.0"
+    constraintVersion = "1.1.3"
+    gmsVisionVersion = "11.8.0"
+}
+
+dependencies {
+    implementation fileTree(include: ['*.jar'], dir: 'libs')
+    implementation "com.android.support:appcompat-v7:$supportVersion"
+    implementation "com.android.support:support-v4:$supportVersion"
+    implementation "com.android.support:design:$supportVersion"
+    implementation "com.android.support:support-compat:$supportVersion"
+    implementation "com.android.support:exifinterface:$supportVersion"
+    implementation "com.android.support.constraint:constraint-layout:$constraintVersion"
+    implementation "com.google.android.gms:play-services-vision:$gmsVisionVersion"
+}
+
+android {
+    compileSdkVersion 28
+    buildToolsVersion "28.0.2"
+    defaultConfig {
+        applicationId "fr.ralala.ministock"
+        minSdkVersion 26
+        targetSdkVersion 26
+        versionCode 1
+        versionName "1.0"
+        testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+    }
+
+    signingConfigs {
+        config {
+            keyAlias 'MyAndroidKey'
+            keyPassword 'myKeyPassword'
+            storeFile file('android.jks')
+            storePassword 'myStorePassword'
+        }
+    }
+
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
+    buildTypes {
+        release {
+            zipAlignEnabled true
+            minifyEnabled true
+            shrinkResources true
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+            signingConfig signingConfigs.config
+        }
+        debug {
+            // to debug ProGuard rules
+            minifyEnabled false
+            signingConfig signingConfigs.config
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules-debug.pro'
+        }
+    }
+}

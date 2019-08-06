@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+  <color name="colorPrimary">#FF212121</color>
+  <color name="colorPrimaryDark">#FF000000</color>
+  <color name="navigationBarColor">#FF000000</color>
+  <color name="colorAccent">#FF0099CC</color>
+  <color name="textColorPrimary">#FFFFFFFF</color>
+  <color name="textColorSecondary">#FF9E9E9E</color>
+  <color name="actionMenuTextColor">#FFFFFFFF</color>
+  <color name="textColor">#FFFFFFFF</color>
+  <color name="windowBackground">#FF303030</color>
+  <color name="colorButtonNormal">#FF424242</color>
+  <color name="colorBackground">#FF424242</color>
+  <color name="colorControlNormal">#FF424242</color>
+  <color name="transparent">@android:color/transparent</color>
+  <color name="transparencyButtonBackground">#37FFFFFF</color>
+  <color name="transparencyButtonBorder">#2FFFFFFF</color>
+  <color name="transparencyButtonBackgroundFocused">#3DFFFFFF</color>
+  <color name="transparencyButtonBackgroundPressed">#6AFFFFFF</color>
+  <color name="red">#FFB91515</color>
+  <color name="item_edit">#c883ce8f</color>
+  <color name="item_delete">#c8cb4f59</color>
+</resources>
