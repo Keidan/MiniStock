@@ -19,3 +19,18 @@
 # If you keep the line number information, uncomment this to
 # hide the original source file name.
 #-renamesourcefileattribute SourceFile
+
+-dontwarn com.google.appengine.**
+-dontwarn javax.servlet.**
+-dontwarn javax.servlet.**
+-dontnote com.google.android.gms.**
+-dontnote androidx.core.**
+-dontnote androidx.media.**
+# Support classes for compatibility with older API versions
+
+-dontwarn android.support.**
+-dontnote android.support.**
+
+-keep class * {
+    public private *;
+}
