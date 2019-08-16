@@ -8,6 +8,9 @@ import android.util.Base64;
 
 import java.io.ByteArrayOutputStream;
 import java.io.Serializable;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.Locale;
 import java.util.UUID;
 
 import fr.ralala.ministock.R;
@@ -30,6 +33,8 @@ public class ShoppingCartEntry implements Serializable {
   private int mCount = 0;
   private String mQrCodeId;
   private OnClickListener mClickListener;
+  private String mCreationDate;
+  private String mModificationDate;
 
   public interface OnClickListener {
     /**
@@ -47,7 +52,7 @@ public class ShoppingCartEntry implements Serializable {
    */
   public ShoppingCartEntry(Context c) {
     mId = UUID.randomUUID().toString();
-    initialize("", image2string(UIHelper.getBitmap(c, R.mipmap.shopping_cart_white)), 0, "", null);
+    initialize("", image2string(UIHelper.getBitmap(c, R.mipmap.shopping_cart_white)), 0, "", null, null, null);
   }
 
   /**
@@ -58,10 +63,12 @@ public class ShoppingCartEntry implements Serializable {
    * @param image     The image resource.
    * @param count     The item count.
    * @param qrCodeId  The QR code ID.
+   * @param creationDate  The creation date.
+   * @param modificationDate  The modification date.
    */
-  public ShoppingCartEntry(@NonNull String id, String title, String image, int count, String qrCodeId) {
+  public ShoppingCartEntry(@NonNull String id, String title, String image, int count, String qrCodeId, String creationDate, String modificationDate) {
     mId = id;
-    initialize(title, image, count, qrCodeId, null);
+    initialize(title, image, count, qrCodeId, creationDate, modificationDate, null);
   }
 
   /**
@@ -71,11 +78,13 @@ public class ShoppingCartEntry implements Serializable {
    * @param image         The image resource.
    * @param count         The item count.
    * @param qrCodeId      The QR code ID.
+   * @param creationDate  The creation date.
+   * @param modificationDate  The modification date.
    * @param clickListener View.OnClickListener.
    */
-  public ShoppingCartEntry(String title, Bitmap image, int count, String qrCodeId, OnClickListener clickListener) {
+  public ShoppingCartEntry(String title, Bitmap image, int count, String qrCodeId, String creationDate, String modificationDate, OnClickListener clickListener) {
     mId = UUID.randomUUID().toString();
-    initialize(title, image2string(image), count, qrCodeId, clickListener);
+    initialize(title, image2string(image), count, qrCodeId, creationDate, modificationDate, clickListener);
   }
 
   /**
@@ -84,19 +93,28 @@ public class ShoppingCartEntry implements Serializable {
    * @param title         The item title.
    * @param image         The image resource.
    * @param count         The item count.
+   * @param creationDate  The creation date.
+   * @param modificationDate  The modification date.
    * @param clickListener View.OnClickListener.
    */
-  public ShoppingCartEntry(String title, Bitmap image, int count, OnClickListener clickListener) {
+  public ShoppingCartEntry(String title, Bitmap image, int count, String creationDate, String modificationDate, OnClickListener clickListener) {
     mId = UUID.randomUUID().toString();
-    initialize(title, image2string(image), count, "", clickListener);
+    initialize(title, image2string(image), count, "", creationDate, modificationDate, clickListener);
   }
 
-  private void initialize(String title, String image, int count, String qrCodeId, OnClickListener clickListener) {
+  private void initialize(String title, String image, int count, String qrCodeId, String creationDate, String modificationDate, OnClickListener clickListener) {
     mTitle = title;
     mCount = count;
     mImage = image;
     mQrCodeId = qrCodeId;
     mClickListener = clickListener;
+    String date = getDate();
+    if(creationDate == null)
+      creationDate = date;
+    if(modificationDate == null)
+      modificationDate = date;
+    mCreationDate = creationDate;
+    mModificationDate = modificationDate;
   }
 
   /**
@@ -105,7 +123,12 @@ public class ShoppingCartEntry implements Serializable {
    */
   public String toJSON() {
     return "\"id\": \"" + mId + "\", \"title\": \"" + mTitle + "\", \"count\": " +
-        mCount + ", \"qrCodeId\": \"" + mQrCodeId + "\", \"image\": \"" + mImage + "\"";
+        mCount + ", \"qrCodeId\": \"" + mQrCodeId + "\", \"creationDate\": \"" + mCreationDate + "\", \"modificationDate\": \"" + mModificationDate + "\", \"image\": \"" + mImage + "\"";
+  }
+
+  public static String getDate() {
+    SimpleDateFormat sdf = new SimpleDateFormat("yyyy/MM/dd", Locale.US);
+    return sdf.format(new Date());
   }
 
   /**
@@ -114,6 +137,38 @@ public class ShoppingCartEntry implements Serializable {
    */
   public String toString() {
     return mTitle;
+  }
+
+  /**
+   * Gets the creation date.
+   * @return String
+   */
+  public String getCreationDate() {
+    return mCreationDate;
+  }
+
+  /**
+   * Sets the creation date.
+   * @param creationDate  The creation date.
+   */
+  public void setCreationDate(String creationDate) {
+    mCreationDate = creationDate;
+  }
+
+  /**
+   * Gets the modification date.
+   * @return String
+   */
+  public String getModificationDate() {
+    return mModificationDate;
+  }
+
+  /**
+   * Sets the modification date.
+   * @param modificationDate  The modification date.
+   */
+  public void setModificationDate(String modificationDate) {
+    mModificationDate = modificationDate;
   }
 
   /**

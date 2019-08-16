@@ -36,6 +36,8 @@ if (strlen($json_params) > 0 && isValidJSON($json_params)) {
 	$colImage = DATABASE_MINISTOCK_COL_IMAGE;
 	$colCount = DATABASE_MINISTOCK_COL_COUNT;
 	$colQrCode = DATABASE_MINISTOCK_COL_QRCODEID;
+	$colCreationDate = DATABASE_MINISTOCK_COL_CREATION_DATE;
+	$colModificationDate = DATABASE_MINISTOCK_COL_MODIFICATION_DATE;
 	if(empty($user) || empty($pwd) || empty($action) || empty($table)) {
 		echo response(403, "error", "You have attempted to access a resource for which you do not have the proper authorization or which is not available from your location.");
 	} else {
@@ -51,7 +53,9 @@ if (strlen($json_params) > 0 && isValidJSON($json_params)) {
 						$valImage = $json_data[DATABASE_MINISTOCK_COL_IMAGE];
 						$valCount = $json_data[DATABASE_MINISTOCK_COL_COUNT];
 						$valQrCode = $json_data[DATABASE_MINISTOCK_COL_QRCODEID];
-						$cursor = $mysqli->query("INSERT INTO `$table` (`$colId`, `$colTitle`, `$colImage`, `$colCount`, `$colQrCode`) VALUES ('$valId', '$valTitle', '$valImage', $valCount, '$valQrCode')");
+						$valCreationDate = $json_data[DATABASE_MINISTOCK_COL_CREATION_DATE];
+						$valModificationDate = $json_data[DATABASE_MINISTOCK_COL_MODIFICATION_DATE];
+						$cursor = $mysqli->query("INSERT INTO `$table` (`$colId`, `$colTitle`, `$colImage`, `$colCount`, `$colQrCode`, `$colCreationDate`, `$colModificationDate`) VALUES ('$valId', '$valTitle', '$valImage', $valCount, '$valQrCode', '$valCreationDate', '$valModificationDate')");
 						if(!$cursor) {
 							echo response(501, "error", "Unable to execute the SQL request: " . $mysqli->error);
 						} else {
@@ -62,7 +66,7 @@ if (strlen($json_params) > 0 && isValidJSON($json_params)) {
 						$valImage = $json_data[DATABASE_MINISTOCK_COL_IMAGE];
 						$valCount = $json_data[DATABASE_MINISTOCK_COL_COUNT];
 						$valQrCode = $json_data[DATABASE_MINISTOCK_COL_QRCODEID];
-						$cursor = $mysqli->query("UPDATE `$table` SET `$colTitle` = '$valTitle', `$colImage` = '$valImage', `$colCount` = $valCount, `$colQrCode` = '$valQrCode' WHERE `$colTitle` = '$valTitle'");
+						$cursor = $mysqli->query("UPDATE `$table` SET `$colTitle` = '$valTitle', `$colImage` = '$valImage', `$colCount` = $valCount, `$colQrCode` = '$valQrCode', `$colCreationDate` = '$valCreationDate', `$colModificationDate` = '$valModificationDate' WHERE `$colTitle` = '$valTitle'");
 						if(!$cursor) {
 							echo response(501, "error", "Unable to execute the SQL request: " . $mysqli->error);
 						} else {
@@ -74,7 +78,7 @@ if (strlen($json_params) > 0 && isValidJSON($json_params)) {
 						$valImage = $json_data[DATABASE_MINISTOCK_COL_IMAGE];
 						$valCount = $json_data[DATABASE_MINISTOCK_COL_COUNT];
 						$valQrCode = $json_data[DATABASE_MINISTOCK_COL_QRCODEID];
-						$cursor = $mysqli->query("UPDATE `$table` SET `$colTitle` = '$valTitle', `$colImage` = '$valImage', `$colCount` = $valCount, `$colQrCode` = '$valQrCode' WHERE `$colId` = '$valId'");
+						$cursor = $mysqli->query("UPDATE `$table` SET `$colTitle` = '$valTitle', `$colImage` = '$valImage', `$colCount` = $valCount, `$colQrCode` = '$valQrCode', `$colCreationDate` = '$valCreationDate', `$colModificationDate` = '$valModificationDate' WHERE `$colId` = '$valId'");
 						if(!$cursor) {
 							echo response(501, "error", "Unable to execute the SQL request: " . $mysqli->error);
 						} else {
@@ -126,7 +130,9 @@ if (strlen($json_params) > 0 && isValidJSON($json_params)) {
 								"\", \"$colTitle\": \"".$data[DATABASE_MINISTOCK_COL_TITLE] . 
 								"\", \"$colImage\": \"".$data[DATABASE_MINISTOCK_COL_IMAGE].
 								"\", \"$colCount\": ".$data[DATABASE_MINISTOCK_COL_COUNT] . 
-								", \"$colQrCode\": \"".$data[DATABASE_MINISTOCK_COL_QRCODEID] ."\"},";
+								", \"$colQrCode\": \"".$data[DATABASE_MINISTOCK_COL_QRCODEID] . 
+								"\", \"$colCreationDate\": \"".$data[DATABASE_MINISTOCK_COL_CREATION_DATE] . 
+								"\", \"$colModificationDate\": \"".$data[DATABASE_MINISTOCK_COL_MODIFICATION_DATE] ."\"},";
 								$index++;
 							}
 							mysqli_free_result($cursor);

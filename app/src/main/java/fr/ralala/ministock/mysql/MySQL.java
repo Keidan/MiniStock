@@ -120,7 +120,9 @@ public class MySQL extends BroadcastReceiver {
                                 obj.getString("title"),
                                 obj.getString("image"),
                                 obj.getInt("count"),
-                                obj.getString("qrCodeId")));
+                                obj.getString("qrCodeId"),
+                                obj.getString("creationDate"),
+                                obj.getString("modificationDate")));
                             idx++;
                           }
                           mActivity.runOnUiThread(() -> req.success.onMySQLSuccess(act, list));

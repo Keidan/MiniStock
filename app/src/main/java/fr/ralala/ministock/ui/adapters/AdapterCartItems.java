@@ -76,7 +76,7 @@ public class AdapterCartItems extends RecyclerView.Adapter<AdapterCartItems.View
       viewHolder.tvLogo.setText(t.getTitle());
       viewHolder.ivLogo.setImageBitmap(t.getImage());
       viewHolder.tvCount.setText(String.valueOf(t.getCount()));
-
+      viewHolder.tvModification.setText(t.getModificationDate());
     }
   }
 
@@ -123,12 +123,14 @@ public class AdapterCartItems extends RecyclerView.Adapter<AdapterCartItems.View
     AppCompatTextView tvLogo;
     AppCompatImageView ivLogo;
     AppCompatTextView tvCount;
+    AppCompatTextView tvModification;
 
     ViewHolder(View view) {
       super(view);
       tvLogo = view.findViewById(R.id.tvLogo);
       ivLogo = view.findViewById(R.id.ivLogo);
       tvCount = view.findViewById(R.id.tvCount);
+      tvModification = view.findViewById(R.id.tvModification);
     }
   }
 }

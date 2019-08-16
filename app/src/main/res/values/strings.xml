@@ -12,6 +12,7 @@
   <string name="title_hint">Title</string>
   <string name="count_hint">Count</string>
   <string name="qrcode_hint">QRCode</string>
+  <string name="modification_hint">Last modification</string>
   <string name="zero">0</string>
   <string name="on_double_back_exit_text">Press once again to exit!</string>
   <string name="ok">OK</string>

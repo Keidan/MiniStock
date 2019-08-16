@@ -198,7 +198,9 @@ public class CartItemActivity extends AppCompatActivity implements View.OnClickL
     entry.setQrCodeId(qrcode);
     entry.setTitle(title);
     entry.setImage(image);
-    if (mEntry == null)
+    if (mEntry == null) {
+      entry.setCreationDate(ShoppingCartEntry.getDate());
+      entry.setModificationDate(ShoppingCartEntry.getDate());
       mApp.getDb().insert(this, entry, (requestId, data) -> {
             setResult(RESULT_OK);
             finish();
@@ -206,7 +208,8 @@ public class CartItemActivity extends AppCompatActivity implements View.OnClickL
               UIHelper.showAlertDialog(this, R.string.error,
                   getString(R.string.sql_error) + " : (" + code + ") " + description)
       );
-    else
+    } else {
+      entry.setModificationDate(ShoppingCartEntry.getDate());
       mApp.getDb().update(this, entry, (requestId, data) -> {
             setResult(RESULT_OK);
             finish();
@@ -214,6 +217,7 @@ public class CartItemActivity extends AppCompatActivity implements View.OnClickL
               UIHelper.showAlertDialog(this, R.string.error,
                   getString(R.string.sql_error) + " : (" + code + ") " + description)
       );
+    }
   }
 
   /**
