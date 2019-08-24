@@ -229,33 +229,31 @@ public class MainActivity extends AppCompatActivity implements SwipeEditDeleteRe
    * Functions called to refresh the list.
    */
   private void refresh() {
-    if (!listInProgress) {
-      listInProgress = true;
-      mApp.getDb().list(this, (requestId, data) -> {
-        mListViewContainer.setRefreshing(false);
-        mEmptyViewContainer.setRefreshing(false);
-        @SuppressWarnings("unchecked")
-        List<ShoppingCartEntry> li = (List<ShoppingCartEntry>) data;
-        mAdapter = new AdapterCartItems(mRecyclerView, li);
-        mRecyclerView.setAdapter(mAdapter);
-        mAdapter.safeNotifyDataSetChanged();
-        listInProgress = false;
-        if (mAdapter.getItemCount() != 0)
-          mEmptyViewContainer.setVisibility(View.GONE);
-        else
-          mEmptyViewContainer.setVisibility(View.VISIBLE);
-      }, (action, code, description) -> {
-        mListViewContainer.setRefreshing(false);
-        mEmptyViewContainer.setRefreshing(false);
-        UIHelper.showAlertDialog(this, R.string.error,
-            getString(R.string.error_list_entries) + " : (" + code + ") " + description);
-        listInProgress = false;
-        if (mAdapter.getItemCount() != 0)
-          mEmptyViewContainer.setVisibility(View.GONE);
-        else
-          mEmptyViewContainer.setVisibility(View.VISIBLE);
-      });
-    }
+    listInProgress = true;
+    mApp.getDb().list(this, (requestId, data) -> {
+      mListViewContainer.setRefreshing(false);
+      mEmptyViewContainer.setRefreshing(false);
+      @SuppressWarnings("unchecked")
+      List<ShoppingCartEntry> li = (List<ShoppingCartEntry>) data;
+      mAdapter = new AdapterCartItems(mRecyclerView, li);
+      mRecyclerView.setAdapter(mAdapter);
+      mAdapter.safeNotifyDataSetChanged();
+      listInProgress = false;
+      if (mAdapter.getItemCount() != 0)
+        mEmptyViewContainer.setVisibility(View.GONE);
+      else
+        mEmptyViewContainer.setVisibility(View.VISIBLE);
+    }, (action, code, description) -> {
+      mListViewContainer.setRefreshing(false);
+      mEmptyViewContainer.setRefreshing(false);
+      UIHelper.showAlertDialog(this, R.string.error,
+          getString(R.string.error_list_entries) + " : (" + code + ") " + description);
+      listInProgress = false;
+      if (mAdapter.getItemCount() != 0)
+        mEmptyViewContainer.setVisibility(View.GONE);
+      else
+        mEmptyViewContainer.setVisibility(View.VISIBLE);
+    });
   }
 
   /**
@@ -264,6 +262,8 @@ public class MainActivity extends AppCompatActivity implements SwipeEditDeleteRe
   @Override
   public void onPause() {
     super.onPause();
+    mListViewContainer.setRefreshing(false);
+    mEmptyViewContainer.setRefreshing(false);
     stopService(new Intent(this, MySQLService.class));
     unregisterReceiver(mApp.getDb());
   }

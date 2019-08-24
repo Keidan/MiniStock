@@ -144,7 +144,9 @@ public class CartItemActivity extends AppCompatActivity implements View.OnClickL
         mTietQRCode.setText(data.getStringExtra(ScanActivity.KEY_QRCODE));
       }
     } else if (requestCode == PICK_IMAGE_ID) {
-      mIbLogo.setImageBitmap(ImagePicker.getImageFromResult(this, resultCode, data));
+      Bitmap bm = ImagePicker.getImageFromResult(this, resultCode, data);
+      if(bm != null)
+        mIbLogo.setImageBitmap(bm);
     } else
       super.onActivityResult(requestCode, resultCode, data);
   }
