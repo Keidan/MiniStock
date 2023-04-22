@@ -12,7 +12,6 @@
   <color name="colorButtonNormal">#FF424242</color>
   <color name="colorBackground">#FF424242</color>
   <color name="colorControlNormal">#FF424242</color>
-  <color name="transparent">@android:color/transparent</color>
   <color name="transparencyButtonBackground">#37FFFFFF</color>
   <color name="transparencyButtonBorder">#2FFFFFFF</color>
   <color name="transparencyButtonBackgroundFocused">#3DFFFFFF</color>

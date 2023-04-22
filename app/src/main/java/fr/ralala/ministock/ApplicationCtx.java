@@ -10,6 +10,7 @@ import android.content.SharedPreferences;
 
 import androidx.preference.PreferenceManager;
 
+import java.util.Locale;
 import java.util.concurrent.TimeUnit;
 
 import fr.ralala.ministock.db.DB;
@@ -113,7 +114,7 @@ public class ApplicationCtx extends Application {
    * @return String
    */
   public String getProtocol() {
-    return mPrefs.getString(PREF_KEY_PROTOCOL, getString(R.string.default_protocol).toUpperCase());
+    return mPrefs.getString(PREF_KEY_PROTOCOL, getString(R.string.default_protocol).toUpperCase(Locale.getDefault()));
   }
 
   /**
