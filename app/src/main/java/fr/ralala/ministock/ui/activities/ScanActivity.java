@@ -175,7 +175,6 @@ public class ScanActivity extends AppCompatActivity implements SurfaceHolder.Cal
       mIsStopped = false;
     } catch (IOException e) {
       Toast.makeText(this, R.string.error_camera, Toast.LENGTH_LONG).show();
-      e.printStackTrace();
     }
   }
 

@@ -10,6 +10,7 @@
 
   <application
     android:name=".ApplicationCtx"
+    android:usesCleartextTraffic="true"
     tools:targetApi="31"
     android:allowBackup="true"
     android:dataExtractionRules="@xml/data_extraction_rules"
