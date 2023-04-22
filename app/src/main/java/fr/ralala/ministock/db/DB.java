@@ -7,6 +7,7 @@ import android.util.Log;
 
 import androidx.appcompat.app.AlertDialog;
 
+import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
@@ -89,7 +90,11 @@ public class DB extends BroadcastReceiver {
     if (action != null && action.equals(ApplicationCtx.ACTION_STRING_S2A)) {
       final String name = DBBroadcastMessage.class.getSimpleName();
       if (intent.hasExtra(name)) {
-        DBBroadcastMessage bm = (DBBroadcastMessage) intent.getSerializableExtra(name);
+        DBBroadcastMessage bm;
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.TIRAMISU)
+          bm = intent.getSerializableExtra(name, DBBroadcastMessage.class);
+        else
+          bm = (DBBroadcastMessage)intent.getSerializableExtra(name);
         if (bm.getBroadcastType() == DBBroadcastType.SHOW_PROGRESS)
           mActivity.runOnUiThread(mActivity::progressShow);
         else if (bm.getBroadcastType() == DBBroadcastType.READ)
@@ -190,9 +195,9 @@ public class DB extends BroadcastReceiver {
    * @param json The JSON response object.
    * @param code The HTTP code.
    * @param data The raw data.
-   * @throws Exception If an error has occurred.
+   * @throws JSONException If an error has occurred.
    */
-  private void decodeError(DBRequest req, DBAction act, JSONObject json, int code, String data) throws Exception {
+  private void decodeError(DBRequest req, DBAction act, JSONObject json, int code, String data) throws JSONException {
     int c;
     if (json.has("code"))
       c = json.getInt("code");

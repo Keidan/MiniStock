@@ -235,8 +235,11 @@ public class MainActivity extends AppCompatActivity implements SwipeEditDeleteRe
 
   /**
    * Called to handle the click on the back button.
+   * @deprecated For the moment I continue with this.
    */
+  @Deprecated
   @Override
+  @SuppressWarnings("squid:S1133")
   public void onBackPressed() {
     if (mLastBackPressed + BACK_TIME_DELAY > System.currentTimeMillis()) {
       super.onBackPressed();

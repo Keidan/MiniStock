@@ -109,7 +109,10 @@ public class CartItemActivity extends AppCompatActivity implements AdapterCartIt
 
     if (getIntent().getAction() == null && getIntent().getExtras() != null) {
       Bundle extras = getIntent().getExtras();
-      mEntry = (CartEntry) extras.getSerializable(EXTRA_ENTRY);
+      if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.TIRAMISU)
+        mEntry = extras.getSerializable(EXTRA_ENTRY, CartEntry.class);
+      else
+        mEntry = (CartEntry) extras.getSerializable(EXTRA_ENTRY);
       if (mEntry != null) {
         mIbLogo.setImageBitmap(mEntry.getImage());
         mTietTitle.setText(mEntry.getTitle());
@@ -121,12 +124,17 @@ public class CartItemActivity extends AppCompatActivity implements AdapterCartIt
     mIbLogo.setOnClickListener(v -> launcherPickPhoto.start());
 
     if (savedInstanceState != null) {
-      CartEntry ce = (CartEntry) savedInstanceState.getSerializable(ITEM);
+      CartEntry ce;
+      if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.TIRAMISU)
+        ce = savedInstanceState.getSerializable(ITEM, CartEntry.class);
+      else
+        ce = (CartEntry) savedInstanceState.getSerializable(ITEM);
       mTietTitle.setText(ce.getTitle());
       mIbLogo.setImageBitmap(ce.getImage());
       mItemsAdapter.addAll(ce.getItems());
     }
     tvItemsCount.setText(String.valueOf(mItemsAdapter.getCount()));
+    setResult(RESULT_CANCELED);
   }
 
   @Override
@@ -248,15 +256,6 @@ public class CartItemActivity extends AppCompatActivity implements AdapterCartIt
             getString(R.string.db_error) + " : (" + code + ") " + description)
       );
     }
-  }
-
-  /**
-   * Called to handle the click on the back button.
-   */
-  @Override
-  public void onBackPressed() {
-    setResult(RESULT_CANCELED);
-    super.onBackPressed();
   }
 
   @Override
