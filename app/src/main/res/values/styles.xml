@@ -24,8 +24,8 @@
     <item name="android:spinnerDropDownItemStyle">@style/SpinnerItemStyle</item>
     <item name="android:checkboxStyle">@style/CheckBoxStyle</item>
     <item name="android:radioButtonStyle">@style/RadioButtonStyle</item>
-    <item name="android:homeAsUpIndicator">@mipmap/ic_menu_back</item>
-    <item name="*android:actionModeShareDrawable">@mipmap/ic_menu_back</item>
+    <item name="android:homeAsUpIndicator">@drawable/arrow_left_white</item>
+    <item name="*android:actionModeShareDrawable">@drawable/arrow_left_white</item>
   </style>
 
   <style name="AppTheme.NoActionBar">

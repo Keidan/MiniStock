@@ -3,60 +3,49 @@
   android:layout_width="match_parent"
   android:layout_height="wrap_content">
 
-  <android.support.v7.widget.AppCompatImageView
-    android:id="@+id/ivLogo"
-    android:layout_width="72dp"
-    android:layout_height="72dp"
+  <ImageView
+    android:id="@+id/ivPhoto"
+    android:layout_width="36dp"
+    android:layout_height="36dp"
     android:layout_alignParentStart="true"
-    android:layout_alignParentTop="true"
-    android:adjustViewBounds="true"
-    android:gravity="center"
-    android:scaleType="fitXY" />
+    android:contentDescription="@null"
+    android:background="?android:attr/selectableItemBackground"
+    android:src="@drawable/button_scan_on_white" />
 
-  <android.support.v7.widget.AppCompatTextView
-    android:id="@+id/tvLogo"
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:layout_alignParentTop="true"
-    android:layout_marginStart="15dp"
-    android:layout_toEndOf="@id/ivLogo"
-    android:textSize="24sp"
-    android:textStyle="bold" />
-
-  <android.support.v7.widget.AppCompatTextView
-    android:id="@+id/tvCountLabel"
+  <androidx.appcompat.widget.AppCompatTextView
+    android:id="@+id/tvCodeLabel"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
-    android:layout_below="@id/tvLogo"
+    android:layout_alignParentTop="true"
     android:layout_marginStart="15dp"
-    android:layout_toEndOf="@id/ivLogo"
-    android:text="@string/count_hint" />
+    android:layout_toEndOf="@id/ivPhoto"
+    android:text="@string/qrcode_hint" />
 
-  <android.support.v7.widget.AppCompatTextView
-    android:id="@+id/tvCount"
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:layout_below="@id/tvLogo"
-    android:layout_marginBottom="5dp"
-    android:layout_marginStart="5dp"
-    android:layout_toEndOf="@id/tvCountLabel" />
-
-  <android.support.v7.widget.AppCompatTextView
-    android:id="@+id/tvModificationLabel"
+  <androidx.appcompat.widget.AppCompatTextView
+    android:id="@+id/tvCode"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
-    android:layout_below="@id/tvCount"
     android:layout_marginStart="15dp"
-    android:layout_toEndOf="@id/ivLogo"
-    android:text="@string/modification_hint" />
+    android:layout_alignParentTop="true"
+    android:layout_toEndOf="@id/tvCodeLabel"
+    android:text="@null" />
 
-  <android.support.v7.widget.AppCompatTextView
-    android:id="@+id/tvModification"
-    android:layout_width="match_parent"
+  <androidx.appcompat.widget.AppCompatTextView
+    android:id="@+id/tvCreationLabel"
+    android:layout_width="wrap_content"
     android:layout_height="wrap_content"
-    android:layout_below="@id/tvCount"
-    android:layout_marginBottom="5dp"
-    android:layout_marginStart="5dp"
-    android:layout_toEndOf="@id/tvModificationLabel" />
+    android:layout_marginStart="15dp"
+    android:layout_below="@id/tvCode"
+    android:layout_toEndOf="@id/ivPhoto"
+    android:text="@string/creation_hint" />
+
+  <androidx.appcompat.widget.AppCompatTextView
+    android:id="@+id/tvCreation"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:layout_marginStart="13dp"
+    android:layout_below="@id/tvCode"
+    android:layout_toEndOf="@id/tvCreationLabel"
+    android:text="@null"  />
 
 </RelativeLayout>

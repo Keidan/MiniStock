@@ -1,34 +1,12 @@
+plugins {
+    id "org.sonarqube" version "3.3"
+}
+
 apply plugin: 'com.android.application'
 
-ext {
-    supportVersion = "28.0.0"
-    constraintVersion = "1.1.3"
-    gmsVisionVersion = "11.8.0"
-}
-
-dependencies {
-    implementation fileTree(include: ['*.jar'], dir: 'libs')
-    implementation "com.android.support:appcompat-v7:$supportVersion"
-    implementation "com.android.support:support-v4:$supportVersion"
-    implementation "com.android.support:design:$supportVersion"
-    implementation "com.android.support:support-compat:$supportVersion"
-    implementation "com.android.support:exifinterface:$supportVersion"
-    implementation "com.android.support.constraint:constraint-layout:$constraintVersion"
-    implementation "com.google.android.gms:play-services-vision:$gmsVisionVersion"
-}
+final SONAR_PROJECT_VERSION = '1.1'
 
 android {
-    compileSdkVersion 28
-    buildToolsVersion "28.0.2"
-    defaultConfig {
-        applicationId "fr.ralala.ministock"
-        minSdkVersion 26
-        targetSdkVersion 26
-        versionCode 1
-        versionName "1.0"
-        testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
-    }
-
     signingConfigs {
         config {
             keyAlias 'MyAndroidKey'
@@ -37,10 +15,16 @@ android {
             storePassword 'myStorePassword'
         }
     }
-
-    compileOptions {
-        sourceCompatibility JavaVersion.VERSION_1_8
-        targetCompatibility JavaVersion.VERSION_1_8
+    namespace 'fr.ralala.ministock'
+    compileSdk 33
+    buildToolsVersion "33.0.0"
+    defaultConfig {
+        applicationId "fr.ralala.ministock"
+        minSdk 29
+        targetSdk 33
+        versionCode 101
+        versionName "1.1"
+        signingConfig signingConfigs.config
     }
     buildTypes {
         release {
@@ -51,10 +35,75 @@ android {
             signingConfig signingConfigs.config
         }
         debug {
-            // to debug ProGuard rules
             minifyEnabled false
             signingConfig signingConfigs.config
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules-debug.pro'
         }
     }
+
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
+    // This is important, it will run lint checks but won't abort build
+    lintOptions {
+        abortOnError false
+    }
+    sonarqube {
+        properties {
+            property "sonar.projectKey", "Keidan_MiniStock"
+            property "sonar.organization", "keidan"
+            property "sonar.host.url", "https://sonarcloud.io"
+            property 'sonar.projectName', 'MiniStock'
+            property 'sonar.projectVersion', SONAR_PROJECT_VERSION
+            property 'sonar.coverage.exclusions', "**/**"
+        }
+    }
+}
+
+dependencies {
+    implementation fileTree(include: ['*.jar'], dir: 'libs')
+    implementation "androidx.appcompat:appcompat:1.6.1"
+    implementation "androidx.preference:preference:1.2.0"
+    implementation "androidx.swiperefreshlayout:swiperefreshlayout:1.1.0"
+    implementation "com.google.android.material:material:1.8.0"
+    implementation "com.google.android.gms:play-services-vision:20.1.3"
+    implementation 'androidx.exifinterface:exifinterface:1.3.6'
+}
+
+// versionCode <-> versionName /////////////////////////////////////////////////////////////////////
+// I got the idea (code) below from the repository https://github.com/sal0max/currencie
+/**
+ * Checks if versionCode and versionName match.
+ * Needed because of F-Droid: both have to be hard-coded and can't be assigned dynamically.
+ * So at least check during build for them to match.
+ */
+task checkVersion {
+    int versionCode = android.defaultConfig.versionCode
+    String versionName = android.defaultConfig.versionName
+    int correctVersionCode = generateVersionCode(android.defaultConfig.versionName)
+    if (versionCode != correctVersionCode)
+        throw new GradleException(
+          "versionCode and versionName don't match: " +
+            "versionCode should be $correctVersionCode. Is $versionCode."
+        )
+    if (versionName != SONAR_PROJECT_VERSION)
+        throw new GradleException(
+          "versionName and sonar.projectVersion don't match: " +
+            "sonar.projectVersion should be $versionName. Is $SONAR_PROJECT_VERSION."
+        )
+}
+assemble.dependsOn checkVersion
+
+/**
+ * Generates a versionCode based on the given semVer String.
+ * See e.g. https://proandroiddev.com/keep-salinity-with-your-versioncode-db2089b640b9
+ *
+ * @param semVer e.g. 1.27
+ * @return e.g. 127 (-> 1 27)
+ */
+private static int generateVersionCode(String semVer) {
+    return semVer.split('\\.')
+      .collect { Integer.parseInt(it) }
+      .inject { sum, value -> sum * 100 + value }
 }

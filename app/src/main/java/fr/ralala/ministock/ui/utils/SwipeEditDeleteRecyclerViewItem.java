@@ -2,16 +2,17 @@ package fr.ralala.ministock.ui.utils;
 
 import android.app.Activity;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.graphics.RectF;
-import android.support.annotation.NonNull;
-import android.support.v4.content.res.ResourcesCompat;
-import android.support.v7.widget.RecyclerView;
-import android.support.v7.widget.helper.ItemTouchHelper;
 import android.view.MotionEvent;
 import android.view.View;
+
+import androidx.annotation.NonNull;
+import androidx.core.content.ContextCompat;
+import androidx.core.content.res.ResourcesCompat;
+import androidx.recyclerview.widget.ItemTouchHelper;
+import androidx.recyclerview.widget.RecyclerView;
 
 import fr.ralala.ministock.R;
 
@@ -22,17 +23,16 @@ import fr.ralala.ministock.R;
  * </p>
  *
  * @author Keidan
- * <p>
  * ******************************************************************************
  */
 public class SwipeEditDeleteRecyclerViewItem extends ItemTouchHelper.SimpleCallback implements RecyclerView.OnItemTouchListener {
 
-  private Paint mPaint = new Paint();
-  private SwipeEditDeleteRecyclerViewItemListener mListener;
-  private Bitmap iconEdit;
-  private Bitmap iconDelete;
-  private int colorEdit;
-  private int colorDelete;
+  private final Paint mPaint = new Paint();
+  private final SwipeEditDeleteRecyclerViewItemListener mListener;
+  private final Bitmap iconEdit;
+  private final Bitmap iconDelete;
+  private final int colorEdit;
+  private final int colorDelete;
   private RectF mBackgroundEdit = null;
   private RectF mBackgroundDelete = null;
   private int mAdapterPosition = -1;
@@ -42,8 +42,8 @@ public class SwipeEditDeleteRecyclerViewItem extends ItemTouchHelper.SimpleCallb
     mListener = listener;
     colorEdit = ResourcesCompat.getColor(activity.getResources(), R.color.item_edit, activity.getTheme());
     colorDelete = ResourcesCompat.getColor(activity.getResources(), R.color.item_delete, activity.getTheme());
-    iconEdit = BitmapFactory.decodeResource(activity.getResources(), R.mipmap.ic_edit);
-    iconDelete = BitmapFactory.decodeResource(activity.getResources(), R.mipmap.ic_delete);
+    iconEdit = UIHelper.drawableToBitmap(ContextCompat.getDrawable(activity, R.drawable.pencil_white));
+    iconDelete = UIHelper.drawableToBitmap(ContextCompat.getDrawable(activity, R.drawable.delete_white));
     ItemTouchHelper itemTouchHelper = new ItemTouchHelper(this);
     itemTouchHelper.attachToRecyclerView(recyclerView);
     recyclerView.addOnItemTouchListener(this);
@@ -100,7 +100,7 @@ public class SwipeEditDeleteRecyclerViewItem extends ItemTouchHelper.SimpleCallb
    */
   @Override
   public void onTouchEvent(@NonNull RecyclerView rv, @NonNull MotionEvent e) {
-
+    /* nothing */
   }
 
   /**
@@ -110,6 +110,7 @@ public class SwipeEditDeleteRecyclerViewItem extends ItemTouchHelper.SimpleCallb
    */
   @Override
   public void onRequestDisallowInterceptTouchEvent(boolean disallowIntercept) {
+    /* nothing */
   }
 
   /**
@@ -166,27 +167,27 @@ public class SwipeEditDeleteRecyclerViewItem extends ItemTouchHelper.SimpleCallb
         viewHolder.itemView.setTranslationX(dX / 5);
         if (dX > 0) {
           mPaint.setColor(colorEdit);
-          mBackgroundEdit = new RectF((float) itemView.getLeft() + dX / 5, (float) itemView.getTop(), (float) itemView.getLeft(), (float) itemView.getBottom());
+          mBackgroundEdit = new RectF(itemView.getLeft() + dX / 5, itemView.getTop(), itemView.getLeft(), itemView.getBottom());
           // Draw Rect with varying right side, equal to displacement dX
           c.drawRect(mBackgroundEdit, mPaint);
           // Set the image icon for Right swipe
-          float offset = Math.abs((mBackgroundEdit.right) / 2) - (iconEdit.getWidth() / 2);
+          float offset = Math.abs((mBackgroundEdit.right) / 2.f) - (iconEdit.getWidth() / 2.f);
           mPaint.setAlpha((int) ((dX * 255) / itemView.getWidth()));
           c.drawBitmap(iconEdit,
-              mBackgroundEdit.right - offset,
-              (float) itemView.getTop() + (height - iconEdit.getHeight()) / 2,
-              mPaint);
+            mBackgroundEdit.right - offset,
+            itemView.getTop() + (height - iconEdit.getHeight()) / 2,
+            mPaint);
         } else {
           mPaint.setColor(colorDelete);
-          mBackgroundDelete = new RectF((float) itemView.getRight() + dX / 5, (float) itemView.getTop(), (float) itemView.getRight(), (float) itemView.getBottom());
+          mBackgroundDelete = new RectF(itemView.getRight() + dX / 5, itemView.getTop(), itemView.getRight(), itemView.getBottom());
           c.drawRect(mBackgroundDelete, mPaint);
           //Set the image icon for Left swipe
-          float offset = Math.abs((mBackgroundDelete.right) / 2) - (iconDelete.getWidth() / 2);
+          float offset = Math.abs((mBackgroundDelete.right) / 2.f) - (iconDelete.getWidth() / 2.f);
           mPaint.setAlpha((int) ((Math.abs(dX) * 255) / itemView.getWidth()));
           c.drawBitmap(iconDelete,
-              mBackgroundDelete.right - (offset / 3),
-              (float) itemView.getTop() + (height - iconDelete.getHeight()) / 2,
-              mPaint);
+            mBackgroundDelete.right - (offset / 3),
+            itemView.getTop() + (height - iconDelete.getHeight()) / 2,
+            mPaint);
         }
 
       } else {

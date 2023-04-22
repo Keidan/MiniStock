@@ -1,136 +1,160 @@
 package fr.ralala.ministock.ui.adapters;
 
-import android.support.annotation.NonNull;
-import android.support.v7.widget.AppCompatImageView;
-import android.support.v7.widget.AppCompatTextView;
-import android.support.v7.widget.RecyclerView;
-import android.util.Log;
+import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ArrayAdapter;
+import android.widget.ImageView;
 
+import androidx.annotation.NonNull;
+import androidx.appcompat.widget.AppCompatTextView;
+
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 import fr.ralala.ministock.R;
-import fr.ralala.ministock.models.ShoppingCartEntry;
+import fr.ralala.ministock.db.models.CartItem;
 
 /**
  * ******************************************************************************
  * <p><b>Project MiniStock</b><br/>
- * Adapter used for the RecyclerView
+ * Adapter used for the ListView
  * </p>
  *
  * @author Keidan
- * <p>
  * ******************************************************************************
  */
-public class AdapterCartItems extends RecyclerView.Adapter<AdapterCartItems.ViewHolder>{
-  private static final int RES_ID = R.layout.view_cart_item;
-  private List<ShoppingCartEntry> mItems;
-  private RecyclerView mRecyclerView;
+public class AdapterCartItems extends ArrayAdapter<CartItem> {
+  private static final int ID = R.layout.view_cart_item;
+  private final List<CartItem> mItems;
+  private final OnClick mListener;
 
-  /**
-   * Creates the array adapter.
-   * @param recyclerView The owner object.
-   * @param objects The objects list.
-   */
-  public AdapterCartItems(RecyclerView recyclerView,
-                          final List<ShoppingCartEntry> objects) {
-    mRecyclerView = recyclerView;
-    mItems = objects;
+  public AdapterCartItems(final Context context,
+                          final List<CartItem> objects,
+                          final OnClick listener) {
+    super(context, ID, objects);
+    mListener = listener;
+    mItems = new ArrayList<>(objects);
   }
 
   /**
-   * Returns an item.
-   * @param position Item position.
-   * @return T
+   * Returns the items.
+   *
+   * @return List<CartItem>
    */
-  public ShoppingCartEntry getItem(int position) {
-    return mItems.get(position);
+  public List<CartItem> getItems() {
+    return mItems;
   }
 
   /**
-   * Called when the view is created.
-   * @param viewGroup The view group.
-   * @param i The position
-   * @return ViewHolder
+   * How many items are in the data set represented by this Adapter.
+   *
+   * @return Count of items.
    */
   @Override
-  public @NonNull AdapterCartItems.ViewHolder onCreateViewHolder(@NonNull ViewGroup viewGroup, int i) {
-    View view = LayoutInflater.from(viewGroup.getContext()).inflate(RES_ID, viewGroup, false);
-    return new ViewHolder(view);
-  }
-
-  /**
-   * Called on Binding the view holder.
-   * @param viewHolder The view holder.
-   * @param i The position.
-   */
-  @Override
-  public void onBindViewHolder(@NonNull AdapterCartItems.ViewHolder viewHolder, int i) {
-    if(mItems.isEmpty()) return;
-    if(i > mItems.size())
-      i = 0;
-    final ShoppingCartEntry t = mItems.get(i);
-    if (t != null) {
-      viewHolder.tvLogo.setText(t.getTitle());
-      viewHolder.ivLogo.setImageBitmap(t.getImage());
-      viewHolder.tvCount.setText(String.valueOf(t.getCount()));
-      viewHolder.tvModification.setText(t.getModificationDate());
-    }
-  }
-
-  /**
-   * Returns the items count/
-   * @return int
-   */
-  @Override
-  public int getItemCount() {
+  public int getCount() {
     return mItems.size();
   }
 
   /**
-   * Adds an item.
-   * @param item The item to add.
+   * Get the row id associated with the specified position in the list.
+   *
+   * @param position The position of the item within the adapter's data set whose row id we want.
+   * @return The id of the item at the specified position.
    */
-  public void addItem(ShoppingCartEntry item) {
+  @Override
+  public long getItemId(int position) {
+    return mItems.get(position).hashCode();
+  }
+
+  /**
+   * Remove all elements from the list.
+   */
+  @Override
+  public void clear() {
+    mItems.clear();
+    notifyDataSetChanged();
+  }
+
+  /**
+   * Remove an elements from the list.
+   */
+  public void remove(int index) {
+    mItems.remove(index);
+    notifyDataSetChanged();
+  }
+
+  /**
+   * Adds a list of new items to the list.
+   *
+   * @param collection The items to be added.
+   */
+  @Override
+  public void addAll(@NonNull Collection<? extends CartItem> collection) {
+    mItems.addAll(collection);
+    notifyDataSetChanged();
+  }
+
+  /**
+   * Adds a new item to the list.
+   */
+  @Override
+  public void add(CartItem item) {
     mItems.add(item);
-    safeNotifyDataSetChanged();
+    notifyDataSetChanged();
   }
 
   /**
-   * Removes an item.
-   * @param item The item to remove.
+   * Get a View that displays the data at the specified position in the data set.
+   *
+   * @param position    The position of the item within the adapter's data set of the item whose view we want.
+   * @param convertView This value may be null.
+   * @param parent      This value cannot be null.
+   * @return This value cannot be null.
    */
-  public void removeItem(ShoppingCartEntry item) {
-    mItems.remove(item);
-    safeNotifyDataSetChanged();
+  @Override
+  public @NonNull View getView(final int position, final View convertView,
+                               @NonNull final ViewGroup parent) {
+    View v = convertView;
+    if (v == null) {
+      final LayoutInflater inflater = (LayoutInflater) getContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+      if (inflater != null) {
+        v = inflater.inflate(ID, null);
+        ViewHolder vh = new ViewHolder();
+        vh.ivPhoto = v.findViewById(R.id.ivPhoto);
+        vh.tvCodeLabel = v.findViewById(R.id.tvCodeLabel);
+        vh.tvCode = v.findViewById(R.id.tvCode);
+        vh.tvCreation = v.findViewById(R.id.tvCreation);
+        v.setTag(vh);
+      }
+    }
+    if (v != null && v.getTag() != null) {
+      ViewHolder vh = (ViewHolder) v.getTag();
+      CartItem ci = mItems.get(position);
+      vh.ivPhoto.setOnClickListener(unused -> mListener.onClick(ci, position));
+      if (ci.getQrCodeId() == null || ci.getQrCodeId().trim().isEmpty()) {
+        vh.tvCodeLabel.setVisibility(View.GONE);
+        vh.tvCode.setVisibility(View.GONE);
+      } else {
+        vh.tvCodeLabel.setVisibility(View.VISIBLE);
+        vh.tvCode.setVisibility(View.VISIBLE);
+        vh.tvCode.setText(ci.getQrCodeId());
+      }
+      vh.tvCreation.setText(ci.getCreationDate());
+    }
+    return v == null ? new View(getContext()) : v;
   }
 
-  /**
-   * This method call mRecyclerView.getRecycledViewPool().clear() and notifyDataSetChanged().
-   */
-  public void safeNotifyDataSetChanged() {
-    mRecyclerView.getRecycledViewPool().clear();
-    try {
-      notifyDataSetChanged();
-    } catch(Exception e) {
-      Log.e(getClass().getSimpleName(), "Exception: " + e.getMessage(), e);
-    }
+  public interface OnClick {
+    void onClick(CartItem ci, int position);
   }
 
-  class ViewHolder extends RecyclerView.ViewHolder{
-    AppCompatTextView tvLogo;
-    AppCompatImageView ivLogo;
-    AppCompatTextView tvCount;
-    AppCompatTextView tvModification;
-
-    ViewHolder(View view) {
-      super(view);
-      tvLogo = view.findViewById(R.id.tvLogo);
-      ivLogo = view.findViewById(R.id.ivLogo);
-      tvCount = view.findViewById(R.id.tvCount);
-      tvModification = view.findViewById(R.id.tvModification);
-    }
+  private static class ViewHolder {
+    ImageView ivPhoto;
+    AppCompatTextView tvCodeLabel;
+    AppCompatTextView tvCode;
+    AppCompatTextView tvCreation;
   }
 }

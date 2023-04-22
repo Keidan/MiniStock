@@ -6,13 +6,13 @@
   <string name="default_port">YOUR_DEFAULT_WEB_PORT</string>
   <string name="default_page">/mini-stock-provider/</string>
 
-
   <string name="app_name">MiniStock</string>
   <string name="title_shopping_cart">Cart</string>
   <string name="title_hint">Title</string>
   <string name="count_hint">Count</string>
   <string name="qrcode_hint">QRCode</string>
-  <string name="modification_hint">Last modification</string>
+  <string name="creation_hint">Creation</string>
+  <string name="items">Items</string>
   <string name="zero">0</string>
   <string name="on_double_back_exit_text">Press once again to exit!</string>
   <string name="ok">OK</string>
@@ -20,11 +20,12 @@
   <string name="yes">Yes</string>
   <string name="no">No</string>
   <string name="error">ERROR</string>
-  <string name="sql_error">SQL ERROR</string>
+  <string name="db_error">DB ERROR</string>
   <string name="error_list_entries">Unable to list the entries, the server responded with an error code</string>
   <string name="error_delete_entry">Unable to delete the selected entry, the server responded with an error code</string>
   <string name="list_in_progress">Retrieving the list</string>
   <string name="empty_cart">Please slide from top to bottom to refresh</string>
+  <string name="error_file_not_found">The file was not found</string>
   <string name="error_camera">The camera was not found</string>
   <string name="error_permissions">Unable to continue without the required authorizations.</string>
   <string name="error_invalid_title">Invalid title value</string>
@@ -47,4 +48,5 @@
   <string name="error_invalid_page">Invalid web page value (The page must at least be "/").</string>
   <string name="error_invalid_username">Invalid username value</string>
   <string name="error_invalid_password">Invalid password value</string>
+  <string name="confirm_delete_item">Are you sure you want to delete this item \?</string>
 </resources>

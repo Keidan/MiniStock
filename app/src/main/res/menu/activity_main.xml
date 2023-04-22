@@ -3,13 +3,13 @@
   xmlns:app="http://schemas.android.com/apk/res-auto">
   <item
     android:id="@+id/action_add"
-    android:icon="@mipmap/add_shopping_cart_white"
+    android:icon="@drawable/cart_plus_white"
     android:orderInCategory="100"
     android:title="@null"
     app:showAsAction="ifRoom" />
   <item
     android:id="@+id/action_settings"
-    android:icon="@mipmap/settings_white"
+    android:icon="@drawable/cog_white"
     android:orderInCategory="100"
     android:title="@null"
     app:showAsAction="ifRoom" />

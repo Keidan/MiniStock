@@ -14,7 +14,7 @@
     android:contentDescription="@null"
     android:src="@mipmap/shopping_cart_white" />
 
-  <android.support.design.widget.TextInputLayout
+  <com.google.android.material.textfield.TextInputLayout
     android:id="@+id/tilTitle"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
@@ -25,64 +25,55 @@
     app:errorEnabled="true"
     app:errorTextAppearance="@style/TextAppearanceError">
 
-    <android.support.design.widget.TextInputEditText
+    <com.google.android.material.textfield.TextInputEditText
       android:id="@+id/tietTitle"
       android:layout_width="match_parent"
       android:layout_height="wrap_content"
       android:hint="@string/title_hint"
       android:inputType="textCapSentences" />
 
-  </android.support.design.widget.TextInputLayout>
+  </com.google.android.material.textfield.TextInputLayout>
 
-  <android.support.design.widget.TextInputLayout
-    android:id="@+id/tilCount"
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:layout_below="@id/ibLogo"
-    android:layout_marginEnd="10dp"
-    android:layout_marginStart="10dp"
-    android:layout_marginTop="20dp"
-    app:passwordToggleEnabled="false">
-
-    <android.support.design.widget.TextInputEditText
-      android:id="@+id/tietCount"
-      android:layout_width="match_parent"
-      android:layout_height="wrap_content"
-      android:hint="@string/count_hint"
-      android:inputType="number" />
-  </android.support.design.widget.TextInputLayout>
-
-
-  <android.support.v7.widget.AppCompatImageView
-    android:id="@+id/actvQRCode"
+  <androidx.appcompat.widget.AppCompatImageView
+    android:id="@+id/ivAdd"
     android:layout_width="32dp"
     android:layout_height="32dp"
-    android:layout_alignBottom="@+id/tilQRCode"
-    android:layout_below="@id/tilCount"
+    android:layout_alignParentEnd="true"
+    android:scaleType="fitXY"
+    android:gravity="center"
+    android:layout_gravity="center"
+    android:layout_below="@id/ibLogo"
+    android:layout_marginEnd="10dp"
+    android:background="?android:attr/selectableItemBackground"
+    app:srcCompat="@drawable/plus_circle" />
+
+  <androidx.appcompat.widget.AppCompatTextView
+    android:id="@+id/tvItems"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:layout_below="@id/ibLogo"
     android:layout_marginEnd="5dp"
     android:layout_marginStart="10dp"
     android:layout_marginTop="10dp"
-    android:background="?android:attr/selectableItemBackground"
-    app:srcCompat="@mipmap/camera_alt_white" />
+    android:text="@string/items" />
 
-  <android.support.design.widget.TextInputLayout
-    android:id="@+id/tilQRCode"
-    android:layout_width="match_parent"
+  <androidx.appcompat.widget.AppCompatTextView
+    android:id="@+id/tvItemsCount"
+    android:layout_width="wrap_content"
     android:layout_height="wrap_content"
-    android:layout_alignParentEnd="true"
-    android:layout_below="@id/tilCount"
-    android:layout_marginEnd="10dp"
-    android:layout_marginStart="5dp"
+    android:layout_below="@id/ibLogo"
+    android:layout_marginEnd="5dp"
+    android:layout_marginStart="10dp"
     android:layout_marginTop="10dp"
-    android:layout_toEndOf="@id/actvQRCode"
-    app:passwordToggleEnabled="false">
+    android:layout_toEndOf="@id/tvItems"
+    android:text="@null" />
 
-    <android.support.design.widget.TextInputEditText
-      android:id="@+id/tietQRCode"
-      android:layout_width="match_parent"
-      android:layout_height="wrap_content"
-      android:hint="@string/qrcode_hint"
-      android:inputType="text" />
-  </android.support.design.widget.TextInputLayout>
-
+  <ListView
+    android:id="@+id/lvItems"
+    android:layout_below="@id/tvItems"
+    android:layout_marginEnd="5dp"
+    android:layout_marginStart="10dp"
+    android:layout_marginTop="10dp"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content" />
 </RelativeLayout>

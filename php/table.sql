@@ -1,1 +1,8 @@
-CREATE TABLE `ministock` ( `id` VARCHAR(100) NOT NULL , `title` VARCHAR(250) NOT NULL , `image` MEDIUMBLOB NOT NULL , `count` INT NOT NULL , `qrCodeId` VARCHAR(512) NOT NULL , `creationDate` VARCHAR(10) NOT NULL , `modificationDate` VARCHAR(10) NOT NULL , PRIMARY KEY (`id`)) ENGINE = MyISAM;
+CREATE TABLE `ministock` (
+  `id` VARCHAR(100) NOT NULL,
+  `version` VARCHAR(50) NOT NULL,
+  `title` VARCHAR(250) NOT NULL,
+  `image` MEDIUMBLOB NOT NULL,
+  `items` MEDIUMBLOB NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE = MyISAM;

@@ -36,7 +36,7 @@
     <RelativeLayout
       android:layout_width="match_parent"
       android:layout_height="240dp"
-      android:foreground="@mipmap/control_point">
+      android:foreground="@drawable/control_point_preview_shape">
 
       <SurfaceView
         android:id="@+id/cameraPreview"

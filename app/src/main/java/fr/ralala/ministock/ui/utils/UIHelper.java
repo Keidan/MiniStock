@@ -2,15 +2,21 @@ package fr.ralala.ministock.ui.utils;
 
 
 import android.content.Context;
+import android.content.DialogInterface;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
-import android.support.v7.app.AlertDialog;
+import android.os.Parcelable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
+
+import androidx.appcompat.app.AlertDialog;
+
+import java.io.InputStream;
 
 import fr.ralala.ministock.R;
 
@@ -21,10 +27,59 @@ import fr.ralala.ministock.R;
  * </p>
  *
  * @author Keidan
- * <p>
  * ******************************************************************************
  */
 public class UIHelper {
+  private UIHelper() {
+  }
+
+  /**
+   * Decodes a bitmap array.
+   *
+   * @param data Array
+   * @return Bitmap
+   */
+  public static Bitmap decodeBitmap(byte[] data) {
+    BitmapFactory.Options opts = new BitmapFactory.Options();
+    opts.inPreferredConfig = Bitmap.Config.ARGB_8888;
+    return BitmapFactory.decodeByteArray(data, 0, data.length, opts);
+  }
+
+  /**
+   * Resizes a bitmap
+   *
+   * @param bm     Bitmap
+   * @param width  Width
+   * @param height Height
+   * @return Bitmap
+   */
+  public static Bitmap resizeBitmap(Bitmap bm, int width, int height) {
+    return Bitmap.createScaledBitmap(bm, width, height, false);
+  }
+
+  /**
+   * Converts an ImageView to a Parcelable.
+   *
+   * @param iv ImageView
+   * @return Parcelable
+   */
+  public static Parcelable imageViewToParcelable(ImageView iv) {
+    iv.invalidate();
+    BitmapDrawable drawable = (BitmapDrawable) iv.getDrawable();
+    return drawable.getBitmap();
+  }
+
+  /**
+   * Decodes a bitmap stream.
+   *
+   * @param stream InputStream
+   * @return Bitmap
+   */
+  public static Bitmap decodeBitmap(InputStream stream) {
+    BitmapFactory.Options opts = new BitmapFactory.Options();
+    opts.inPreferredConfig = Bitmap.Config.ARGB_8888;
+    return BitmapFactory.decodeStream(stream, null, opts);
+  }
 
   /**
    * Creates Bitmap objects from resource.
@@ -75,13 +130,13 @@ public class UIHelper {
   public static void showConfirmDialog(final Context c,
                                        String message, final android.view.View.OnClickListener yes) {
     new AlertDialog.Builder(c)
-        .setCancelable(false)
-        .setMessage(message)
-        .setPositiveButton(R.string.yes, (dialog, whichButton) -> {
-          if (yes != null) yes.onClick(null);
-        })
-        .setNegativeButton(R.string.no, (dialog, whichButton) -> {
-        }).show();
+      .setCancelable(false)
+      .setMessage(message)
+      .setPositiveButton(R.string.yes, (dialog, whichButton) -> {
+        if (yes != null) yes.onClick(null);
+      })
+      .setNegativeButton(R.string.no, (dialog, whichButton) -> {
+      }).show();
   }
 
   /**
@@ -125,12 +180,12 @@ public class UIHelper {
     alertDialog.setTitle(c.getResources().getString(title));
     alertDialog.setMessage(message);
     alertDialog.setCancelable(click == null);
-    alertDialog.setButton(AlertDialog.BUTTON_NEUTRAL,
-        c.getResources().getString(R.string.ok), (dialog, which) -> {
-          if (click != null)
-            click.onClick(null);
-          dialog.dismiss();
-        });
+    alertDialog.setButton(DialogInterface.BUTTON_NEUTRAL,
+      c.getResources().getString(R.string.ok), (dialog, which) -> {
+        if (click != null)
+          click.onClick(null);
+        dialog.dismiss();
+      });
     alertDialog.show();
     return alertDialog;
   }

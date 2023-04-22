@@ -3,9 +3,10 @@ package fr.ralala.ministock.ui.utils;
 import android.Manifest;
 import android.app.Activity;
 import android.content.pm.PackageManager;
-import android.support.annotation.NonNull;
-import android.support.v4.app.ActivityCompat;
-import android.support.v4.content.ContextCompat;
+
+import androidx.annotation.NonNull;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 
 import fr.ralala.ministock.R;
 
@@ -16,12 +17,15 @@ import fr.ralala.ministock.R;
  * </p>
  *
  * @author Keidan
- * <p>
  * ******************************************************************************
  */
 public class AppPermissions {
 
   public static final int PERMISSIONS_REQUEST = 1;
+
+  private AppPermissions() {
+
+  }
 
   /**
    * Callback for the result from requesting permissions.
@@ -31,11 +35,11 @@ public class AppPermissions {
    * @param grantResults The grant results for the corresponding permissions which is either PERMISSION_GRANTED or PERMISSION_DENIED. Never null.
    * @return False on error, true else.
    */
-  public static boolean onRequestPermissionsResult(Activity a, @NonNull String permissions[], @NonNull int[] grantResults) {
+  public static boolean onRequestPermissionsResult(Activity a, @NonNull String[] permissions, @NonNull int[] grantResults) {
     for (int i = 0; i < grantResults.length; i++) {
       int n = grantResults[i];
       if (!permissions[i].equals(Manifest.permission.VIBRATE) &&
-          n != PackageManager.PERMISSION_GRANTED) {
+        n != PackageManager.PERMISSION_GRANTED) {
         shouldShowRequest(a);
         return false;
       }
@@ -50,13 +54,13 @@ public class AppPermissions {
    */
   public static boolean checkPermissions(Activity a) {
     return ContextCompat.checkSelfPermission(a,
-        Manifest.permission.INTERNET) == PackageManager.PERMISSION_GRANTED &&
-        ContextCompat.checkSelfPermission(a,
-            Manifest.permission.CAMERA) == PackageManager.PERMISSION_GRANTED &&
-        ContextCompat.checkSelfPermission(a,
-            Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED &&
-        ContextCompat.checkSelfPermission(a,
-            Manifest.permission.READ_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED;
+      Manifest.permission.INTERNET) == PackageManager.PERMISSION_GRANTED &&
+      ContextCompat.checkSelfPermission(a,
+        Manifest.permission.CAMERA) == PackageManager.PERMISSION_GRANTED &&
+      ContextCompat.checkSelfPermission(a,
+        Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED &&
+      ContextCompat.checkSelfPermission(a,
+        Manifest.permission.READ_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED;
   }
 
   /**
@@ -64,11 +68,11 @@ public class AppPermissions {
    */
   private static void requestPermissions(Activity a) {
     ActivityCompat.requestPermissions(a, new String[]{
-        Manifest.permission.INTERNET,
-        Manifest.permission.VIBRATE,
-        Manifest.permission.CAMERA,
-        Manifest.permission.WRITE_EXTERNAL_STORAGE,
-        Manifest.permission.READ_EXTERNAL_STORAGE,
+      Manifest.permission.INTERNET,
+      Manifest.permission.VIBRATE,
+      Manifest.permission.CAMERA,
+      Manifest.permission.WRITE_EXTERNAL_STORAGE,
+      Manifest.permission.READ_EXTERNAL_STORAGE,
     }, PERMISSIONS_REQUEST);
   }
 
@@ -78,13 +82,13 @@ public class AppPermissions {
    */
   public static void shouldShowRequest(Activity a) {
     if (ActivityCompat.shouldShowRequestPermissionRationale(a, Manifest.permission.BLUETOOTH) ||
-        ActivityCompat.shouldShowRequestPermissionRationale(a, Manifest.permission.BLUETOOTH_ADMIN) ||
-        ActivityCompat.shouldShowRequestPermissionRationale(a, Manifest.permission.ACCESS_COARSE_LOCATION) ||
-        ActivityCompat.shouldShowRequestPermissionRationale(a, Manifest.permission.ACCESS_FINE_LOCATION)) {
+      ActivityCompat.shouldShowRequestPermissionRationale(a, Manifest.permission.BLUETOOTH_ADMIN) ||
+      ActivityCompat.shouldShowRequestPermissionRationale(a, Manifest.permission.ACCESS_COARSE_LOCATION) ||
+      ActivityCompat.shouldShowRequestPermissionRationale(a, Manifest.permission.ACCESS_FINE_LOCATION)) {
       UIHelper.showAlertDialog(a,
-          R.string.permissions_title,
-          a.getString(R.string.permissions_required),
-          (unused) -> requestPermissions(a));
+        R.string.permissions_title,
+        a.getString(R.string.permissions_required),
+        unused -> requestPermissions(a));
     } else
       requestPermissions(a);
   }
