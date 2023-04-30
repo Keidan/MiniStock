@@ -47,4 +47,19 @@
       android:summary="@string/settings_pref_summary_password"
       android:defaultValue="@string/default_password"/>
   </androidx.preference.PreferenceCategory>
+
+  <androidx.preference.PreferenceCategory
+    app:iconSpaceReserved="false"
+    android:title="@string/settings_pref_update_title">
+    <CheckBoxPreference android:key="checkUpdateOnStart"
+      app:iconSpaceReserved="false"
+      android:title="@string/settings_pref_title_check_update_startup"
+      android:summary="@string/settings_pref_summary_check_update_startup"
+      android:defaultValue="@string/default_check_update_startup" />
+
+    <Preference android:key="checkUpdate"
+      app:iconSpaceReserved="false"
+      android:title="@string/settings_pref_title_check_update"
+      android:summary="@string/settings_pref_summary_check_update_startup"/>
+  </androidx.preference.PreferenceCategory>
 </androidx.preference.PreferenceScreen>

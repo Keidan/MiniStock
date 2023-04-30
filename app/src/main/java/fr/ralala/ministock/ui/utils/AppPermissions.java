@@ -8,6 +8,9 @@ import androidx.annotation.NonNull;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import fr.ralala.ministock.R;
 
 /**
@@ -58,18 +61,28 @@ public class AppPermissions {
       ContextCompat.checkSelfPermission(a,
         Manifest.permission.READ_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED &&
       ContextCompat.checkSelfPermission(a,
-        Manifest.permission.VIBRATE) == PackageManager.PERMISSION_GRANTED;
+        Manifest.permission.VIBRATE) == PackageManager.PERMISSION_GRANTED &&
+      ContextCompat.checkSelfPermission(a,
+        Manifest.permission.REQUEST_INSTALL_PACKAGES) == PackageManager.PERMISSION_GRANTED &&
+      ContextCompat.checkSelfPermission(a,
+        Manifest.permission.ACCESS_NETWORK_STATE) == PackageManager.PERMISSION_GRANTED &&
+      (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.TIRAMISU && ContextCompat.checkSelfPermission(a,
+        Manifest.permission.POST_NOTIFICATIONS) == PackageManager.PERMISSION_GRANTED);
   }
 
   /**
    * Requests the required permissions.
    */
   private static void requestPermissions(Activity a) {
-    ActivityCompat.requestPermissions(a, new String[]{
-      Manifest.permission.INTERNET,
-      Manifest.permission.VIBRATE,
-      Manifest.permission.READ_EXTERNAL_STORAGE,
-    }, PERMISSIONS_REQUEST);
+    List<String> list = new ArrayList<>();
+    list.add(Manifest.permission.INTERNET);
+    list.add(Manifest.permission.VIBRATE);
+    list.add(Manifest.permission.READ_EXTERNAL_STORAGE);
+    list.add(Manifest.permission.REQUEST_INSTALL_PACKAGES);
+    list.add(Manifest.permission.ACCESS_NETWORK_STATE);
+    if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.TIRAMISU)
+      list.add(Manifest.permission.POST_NOTIFICATIONS);
+    ActivityCompat.requestPermissions(a, list.toArray(new String[]{}), PERMISSIONS_REQUEST);
   }
 
   /**
@@ -79,7 +92,11 @@ public class AppPermissions {
   public static void shouldShowRequest(Activity a) {
     if (ActivityCompat.shouldShowRequestPermissionRationale(a, Manifest.permission.INTERNET) ||
       ActivityCompat.shouldShowRequestPermissionRationale(a, Manifest.permission.VIBRATE) ||
-      ActivityCompat.shouldShowRequestPermissionRationale(a, Manifest.permission.READ_EXTERNAL_STORAGE)) {
+      ActivityCompat.shouldShowRequestPermissionRationale(a, Manifest.permission.REQUEST_INSTALL_PACKAGES) ||
+      ActivityCompat.shouldShowRequestPermissionRationale(a, Manifest.permission.READ_EXTERNAL_STORAGE) ||
+      ActivityCompat.shouldShowRequestPermissionRationale(a, Manifest.permission.ACCESS_NETWORK_STATE) ||
+      (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.TIRAMISU &&
+        ActivityCompat.shouldShowRequestPermissionRationale(a, Manifest.permission.POST_NOTIFICATIONS))) {
       UIHelper.showAlertDialog(a,
         R.string.permissions_title,
         a.getString(R.string.permissions_required),

@@ -15,6 +15,7 @@ import fr.ralala.ministock.ApplicationCtx;
 import fr.ralala.ministock.R;
 import fr.ralala.ministock.models.SettingsKeys;
 import fr.ralala.ministock.ui.utils.UIHelper;
+import fr.ralala.ministock.update.CheckUpdate;
 
 /**
  * ******************************************************************************
@@ -47,6 +48,7 @@ public class SettingsFragment extends PreferenceFragmentCompat implements Prefer
   public void onCreatePreferences(Bundle savedInstanceState, String rootKey) {
     setPreferencesFromResource(R.xml.preferences, rootKey);
 
+    Preference update = findPreference(SettingsKeys.CFG_CHECK_UPDATE);
     ListPreference protocol = findPreference(SettingsKeys.CFG_PROTOCOL);
     mPrefHost = findPreference(SettingsKeys.CFG_HOST);
     mPrefPort = findPreference(SettingsKeys.CFG_PORT);
@@ -69,13 +71,18 @@ public class SettingsFragment extends PreferenceFragmentCompat implements Prefer
     ApplicationCtx app = (ApplicationCtx) requireActivity().getApplication();
     if (null != protocol)
       protocol.setDefaultValue(app.getProtocol());
+    if (update != null)
+      update.setOnPreferenceClickListener(p -> {
+        new CheckUpdate(getContext(), false).execute(null);
+        return true;
+      });
   }
 
   private void updateInputType(EditTextPreference etp, int clazz) {
     etp.setOnBindEditTextListener(editText -> {
       editText.setInputType(clazz);
       editText.setSingleLine(true);
-      if((InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_PASSWORD) == clazz) {
+      if ((InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_PASSWORD) == clazz) {
         editText.setTransformationMethod(PasswordTransformationMethod.getInstance());
       }
       editText.selectAll();

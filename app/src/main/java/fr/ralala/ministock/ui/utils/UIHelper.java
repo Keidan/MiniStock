@@ -189,6 +189,18 @@ public class UIHelper {
   }
 
   /**
+   * Displays a toast.
+   *
+   * @param c       The Android context.
+   * @param message The toast message.
+   */
+  public static void toastShort(final Context c, final @StringRes int message) {
+    /* Create a toast with the launcher icon */
+    Toast toast = Toast.makeText(c, message, Toast.LENGTH_SHORT);
+    toast.show();
+  }
+
+  /**
    * Opens a date picker dialog.
    *
    * @param c       The Android context.

@@ -19,6 +19,8 @@ public final class SettingsKeys {
   public static final String CFG_HOST = "host";
   public static final String CFG_PORT = "port";
   public static final String CFG_PAGE = "page";
+  public static final String CFG_CHECK_UPDATE = "checkUpdate";
+  public static final String CFG_CHECK_UPDATE_ON_START = "checkUpdateOnStart";
 
   private SettingsKeys() {
   }

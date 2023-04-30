@@ -26,6 +26,7 @@ import fr.ralala.ministock.ui.adapters.AdapterCartEntries;
 import fr.ralala.ministock.ui.utils.AppPermissions;
 import fr.ralala.ministock.ui.utils.SwipeEditDeleteRecyclerViewItem;
 import fr.ralala.ministock.ui.utils.UIHelper;
+import fr.ralala.ministock.update.CheckUpdate;
 
 /**
  * ******************************************************************************
@@ -76,6 +77,9 @@ public class MainActivity extends AppCompatActivity implements SwipeEditDeleteRe
     mRecyclerView.setLayoutManager(layoutManager);
     mRecyclerView.getRecycledViewPool().clear();
     new SwipeEditDeleteRecyclerViewItem(this, mRecyclerView, this);
+
+    if (mApp.isCheckUpdateStartup())
+      new CheckUpdate(this, true).execute(null);
   }
 
   private void onCreateSwipeToRefresh(SwipeRefreshLayout refreshLayout) {

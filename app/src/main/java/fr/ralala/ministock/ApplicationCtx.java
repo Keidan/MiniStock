@@ -154,4 +154,13 @@ public class ApplicationCtx extends Application {
   public String getPage() {
     return mPrefs.getString(SettingsKeys.CFG_PAGE, getString(R.string.default_page));
   }
+
+  /**
+   * Checks if an update is available when the application starts
+   *
+   * @return boolean
+   */
+  public boolean isCheckUpdateStartup() {
+    return mPrefs.getBoolean(SettingsKeys.CFG_CHECK_UPDATE_ON_START, Boolean.parseBoolean(getString(R.string.default_check_update_startup)));
+  }
 }
