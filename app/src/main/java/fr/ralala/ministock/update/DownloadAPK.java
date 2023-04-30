@@ -26,6 +26,7 @@ import javax.net.ssl.SSLSocketFactory;
 
 import fr.ralala.ministock.R;
 import fr.ralala.ministock.task.TaskRunner;
+import fr.ralala.ministock.ui.utils.AppPermissions;
 
 /**
  * ******************************************************************************
@@ -174,7 +175,8 @@ public class DownloadAPK extends TaskRunner<Context, UpdaterFile, Double, Update
     if (text != 0)
       mBuilder.setContentText(mContext.getString(text));
     mBuilder.setProgress(max, progress, false);
-    mNotificationManager.notify(NFY_ID, mBuilder.build());
+    if(AppPermissions.checkPermissionsPostNotifications(mContext))
+      mNotificationManager.notify(NFY_ID, mBuilder.build());
   }
 
   private void updateNfy(Intent intent) {
@@ -182,6 +184,7 @@ public class DownloadAPK extends TaskRunner<Context, UpdaterFile, Double, Update
       mContext, 0, intent,
       PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE);
     mBuilder.setContentIntent(notifyPendingIntent);
-    mNotificationManager.notify(NFY_ID, mBuilder.build());
+    if(AppPermissions.checkPermissionsPostNotifications(mContext))
+      mNotificationManager.notify(NFY_ID, mBuilder.build());
   }
 }

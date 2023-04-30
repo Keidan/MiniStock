@@ -2,6 +2,7 @@ package fr.ralala.ministock.ui.utils;
 
 import android.Manifest;
 import android.app.Activity;
+import android.content.Context;
 import android.content.pm.PackageManager;
 
 import androidx.annotation.NonNull;
@@ -55,19 +56,27 @@ public class AppPermissions {
    *
    * @return boolean
    */
-  public static boolean checkPermissions(Activity a) {
-    return ContextCompat.checkSelfPermission(a,
+  public static boolean checkPermissions(Context ctx) {
+    return ContextCompat.checkSelfPermission(ctx,
       Manifest.permission.INTERNET) == PackageManager.PERMISSION_GRANTED &&
-      ContextCompat.checkSelfPermission(a,
+      ContextCompat.checkSelfPermission(ctx,
         Manifest.permission.READ_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED &&
-      ContextCompat.checkSelfPermission(a,
+      ContextCompat.checkSelfPermission(ctx,
         Manifest.permission.VIBRATE) == PackageManager.PERMISSION_GRANTED &&
-      ContextCompat.checkSelfPermission(a,
+      ContextCompat.checkSelfPermission(ctx,
         Manifest.permission.REQUEST_INSTALL_PACKAGES) == PackageManager.PERMISSION_GRANTED &&
-      ContextCompat.checkSelfPermission(a,
+      ContextCompat.checkSelfPermission(ctx,
         Manifest.permission.ACCESS_NETWORK_STATE) == PackageManager.PERMISSION_GRANTED &&
-      (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.TIRAMISU && ContextCompat.checkSelfPermission(a,
+      (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.TIRAMISU && ContextCompat.checkSelfPermission(ctx,
         Manifest.permission.POST_NOTIFICATIONS) == PackageManager.PERMISSION_GRANTED);
+  }
+
+
+  public static boolean checkPermissionsPostNotifications(Context ctx) {
+    if(android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.TIRAMISU)
+      return ContextCompat.checkSelfPermission(ctx,
+        Manifest.permission.POST_NOTIFICATIONS) == PackageManager.PERMISSION_GRANTED;
+    return true;
   }
 
   /**
