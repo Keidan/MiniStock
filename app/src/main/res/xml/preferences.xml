@@ -53,8 +53,7 @@
     android:title="@string/settings_pref_update_title">
     <Preference android:key="version"
       app:iconSpaceReserved="false"
-      android:title="@string/settings_pref_title_check_update"
-      android:summary="@string/settings_pref_summary_check_update"/>
+      android:title="@string/settings_pref_title_version"/>
     <CheckBoxPreference android:key="checkUpdateOnStart"
       app:iconSpaceReserved="false"
       android:title="@string/settings_pref_title_check_update_startup"
