@@ -175,7 +175,7 @@ public class DownloadAPK extends TaskRunner<Context, UpdaterFile, Double, Update
     if (text != 0)
       mBuilder.setContentText(mContext.getString(text));
     mBuilder.setProgress(max, progress, false);
-    if(AppPermissions.checkPermissionsPostNotifications(mContext))
+    if(AppPermissions.checkSelfPermissionPostNotifications(mContext))
       mNotificationManager.notify(NFY_ID, mBuilder.build());
   }
 
@@ -184,7 +184,7 @@ public class DownloadAPK extends TaskRunner<Context, UpdaterFile, Double, Update
       mContext, 0, intent,
       PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE);
     mBuilder.setContentIntent(notifyPendingIntent);
-    if(AppPermissions.checkPermissionsPostNotifications(mContext))
+    if(AppPermissions.checkSelfPermissionPostNotifications(mContext))
       mNotificationManager.notify(NFY_ID, mBuilder.build());
   }
 }
