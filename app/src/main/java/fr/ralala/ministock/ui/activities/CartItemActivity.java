@@ -264,7 +264,7 @@ public class CartItemActivity extends AppCompatActivity implements AdapterCartIt
       cal.set(Calendar.YEAR, selectedYear);
       cal.set(Calendar.MONTH, selectedMonth);
       cal.set(Calendar.DAY_OF_MONTH, selectedDay);
-      mItemsAdapter.getItem(position).setDate(sdf.format(cal));
+      Objects.requireNonNull(mItemsAdapter.getItem(position)).setDate(sdf.format(cal.getTime()));
       mItemsAdapter.notifyDataSetChanged();
     });
   }

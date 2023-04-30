@@ -8,6 +8,7 @@ import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.widget.AppCompatTextView;
 
 import java.util.ArrayList;
@@ -46,6 +47,11 @@ public class AdapterCartItems extends ArrayAdapter<CartItem> {
    */
   public List<CartItem> getItems() {
     return mItems;
+  }
+
+  @Override
+  public @Nullable CartItem getItem(int position) {
+    return mItems.get(position);
   }
 
   /**
