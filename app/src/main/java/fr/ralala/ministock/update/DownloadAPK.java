@@ -1,5 +1,6 @@
 package fr.ralala.ministock.update;
 
+import android.Manifest;
 import android.app.DownloadManager;
 import android.app.Notification;
 import android.app.NotificationChannel;
@@ -7,12 +8,14 @@ import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.util.Log;
 
 import androidx.annotation.Nullable;
 import androidx.core.app.NotificationCompat;
 import androidx.core.app.NotificationManagerCompat;
+import androidx.core.content.ContextCompat;
 import androidx.core.content.FileProvider;
 
 import java.io.File;
@@ -26,7 +29,6 @@ import javax.net.ssl.SSLSocketFactory;
 
 import fr.ralala.ministock.R;
 import fr.ralala.ministock.task.TaskRunner;
-import fr.ralala.ministock.ui.utils.AppPermissions;
 
 /**
  * ******************************************************************************
@@ -175,8 +177,11 @@ public class DownloadAPK extends TaskRunner<Context, UpdaterFile, Double, Update
     if (text != 0)
       mBuilder.setContentText(mContext.getString(text));
     mBuilder.setProgress(max, progress, false);
-    if(AppPermissions.checkSelfPermissionPostNotifications(mContext))
-      mNotificationManager.notify(NFY_ID, mBuilder.build());
+    if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.TIRAMISU &&
+      ContextCompat.checkSelfPermission(mContext, Manifest.permission.POST_NOTIFICATIONS) != PackageManager.PERMISSION_GRANTED) {
+      return;
+    }
+    mNotificationManager.notify(NFY_ID, mBuilder.build());
   }
 
   private void updateNfy(Intent intent) {
@@ -184,7 +189,10 @@ public class DownloadAPK extends TaskRunner<Context, UpdaterFile, Double, Update
       mContext, 0, intent,
       PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE);
     mBuilder.setContentIntent(notifyPendingIntent);
-    if(AppPermissions.checkSelfPermissionPostNotifications(mContext))
-      mNotificationManager.notify(NFY_ID, mBuilder.build());
+    if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.TIRAMISU &&
+      ContextCompat.checkSelfPermission(mContext, Manifest.permission.POST_NOTIFICATIONS) != PackageManager.PERMISSION_GRANTED) {
+      return;
+    }
+    mNotificationManager.notify(NFY_ID, mBuilder.build());
   }
 }
