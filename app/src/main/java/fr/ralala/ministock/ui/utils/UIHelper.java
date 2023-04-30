@@ -1,6 +1,7 @@
 package fr.ralala.ministock.ui.utils;
 
 
+import android.app.DatePickerDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.graphics.Bitmap;
@@ -9,14 +10,15 @@ import android.graphics.Canvas;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.os.Parcelable;
-import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.Toast;
 
+import androidx.annotation.StringRes;
 import androidx.appcompat.app.AlertDialog;
 
 import java.io.InputStream;
+import java.util.Calendar;
 
 import fr.ralala.ministock.R;
 
@@ -140,22 +142,6 @@ public class UIHelper {
   }
 
   /**
-   * Displays a circular progress dialog.
-   *
-   * @param context The Android context.
-   * @return AlertDialog
-   */
-  public static AlertDialog showCircularProgressDialog(Context context) {
-    LayoutInflater layoutInflater = LayoutInflater.from(context);
-    final ViewGroup nullParent = null;
-    View view = layoutInflater.inflate(R.layout.circular_progress, nullParent);
-    AlertDialog progress = new AlertDialog.Builder(context).create();
-    progress.setCancelable(false);
-    progress.setView(view);
-    return progress;
-  }
-
-  /**
    * Displays an alert dialog.
    *
    * @param c       The Android context.
@@ -188,5 +174,29 @@ public class UIHelper {
       });
     alertDialog.show();
     return alertDialog;
+  }
+
+  /**
+   * Displays a toast.
+   *
+   * @param c       The Android context.
+   * @param message The toast message.
+   */
+  public static void toast(final Context c, final @StringRes int message) {
+    /* Create a toast with the launcher icon */
+    Toast toast = Toast.makeText(c, message, Toast.LENGTH_LONG);
+    toast.show();
+  }
+
+  /**
+   * Opens a date picker dialog.
+   *
+   * @param c       The Android context.
+   * @param current The current date.
+   * @param li      The listener used when the date is selected.
+   */
+  public static void openDatePicker(final Context c, final Calendar current, DatePickerDialog.OnDateSetListener li) {
+    DatePickerDialog dpd = new DatePickerDialog(c, li, current.get(Calendar.YEAR), current.get(Calendar.MONTH), current.get(Calendar.DAY_OF_MONTH));
+    dpd.show();
   }
 }

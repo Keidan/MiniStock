@@ -15,7 +15,7 @@ import java.util.Collection;
 import java.util.List;
 
 import fr.ralala.ministock.R;
-import fr.ralala.ministock.db.models.CartItem;
+import fr.ralala.ministock.models.CartItem;
 
 /**
  * ******************************************************************************
@@ -123,26 +123,16 @@ public class AdapterCartItems extends ArrayAdapter<CartItem> {
       if (inflater != null) {
         v = inflater.inflate(ID, null);
         ViewHolder vh = new ViewHolder();
-        vh.ivPhoto = v.findViewById(R.id.ivPhoto);
-        vh.tvCodeLabel = v.findViewById(R.id.tvCodeLabel);
-        vh.tvCode = v.findViewById(R.id.tvCode);
-        vh.tvCreation = v.findViewById(R.id.tvCreation);
+        vh.ivDate = v.findViewById(R.id.ivDate);
+        vh.tvDate = v.findViewById(R.id.tvDate);
         v.setTag(vh);
       }
     }
     if (v != null && v.getTag() != null) {
       ViewHolder vh = (ViewHolder) v.getTag();
       CartItem ci = mItems.get(position);
-      vh.ivPhoto.setOnClickListener(unused -> mListener.onClick(ci, position));
-      if (ci.getQrCodeId() == null || ci.getQrCodeId().trim().isEmpty()) {
-        vh.tvCodeLabel.setVisibility(View.GONE);
-        vh.tvCode.setVisibility(View.GONE);
-      } else {
-        vh.tvCodeLabel.setVisibility(View.VISIBLE);
-        vh.tvCode.setVisibility(View.VISIBLE);
-        vh.tvCode.setText(ci.getQrCodeId());
-      }
-      vh.tvCreation.setText(ci.getCreationDate());
+      vh.ivDate.setOnClickListener(unused -> mListener.onClick(ci, position));
+      vh.tvDate.setText(ci.getDate());
     }
     return v == null ? new View(getContext()) : v;
   }
@@ -152,9 +142,7 @@ public class AdapterCartItems extends ArrayAdapter<CartItem> {
   }
 
   private static class ViewHolder {
-    ImageView ivPhoto;
-    AppCompatTextView tvCodeLabel;
-    AppCompatTextView tvCode;
-    AppCompatTextView tvCreation;
+    ImageView ivDate;
+    AppCompatTextView tvDate;
   }
 }

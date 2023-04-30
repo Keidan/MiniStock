@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.preference.PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
+  xmlns:app="http://schemas.android.com/apk/res-auto"
+  android:key="prefScreen"
+  android:clearTaskOnLaunch="true"
+  android:launchMode="singleTask">
+
+  <androidx.preference.PreferenceCategory
+    app:iconSpaceReserved="false"
+    android:title="@string/settings_pref_title">
+    <androidx.preference.ListPreference
+      app:iconSpaceReserved="false"
+      android:entries="@array/protocols"
+      android:entryValues="@array/protocols"
+      android:key="protocol"
+      android:title="@string/settings_pref_title_protocol"
+      android:summary="@string/settings_pref_summary_protocol"
+      android:defaultValue="@string/default_protocol"/>
+    <androidx.preference.EditTextPreference
+      app:iconSpaceReserved="false"
+      android:key="host"
+      android:title="@string/settings_pref_title_host"
+      android:summary="@string/settings_pref_summary_host"
+      android:defaultValue="@string/default_host"/>
+    <androidx.preference.EditTextPreference
+      app:iconSpaceReserved="false"
+      android:key="port"
+      android:title="@string/settings_pref_title_port"
+      android:summary="@string/settings_pref_summary_port"
+      android:defaultValue="@string/default_port"/>
+    <androidx.preference.EditTextPreference
+      app:iconSpaceReserved="false"
+      android:key="page"
+      android:title="@string/settings_pref_title_page"
+      android:summary="@string/settings_pref_summary_page"
+      android:defaultValue="@string/default_page" />
+    <androidx.preference.EditTextPreference
+      android:key="username"
+      app:iconSpaceReserved="false"
+      android:title="@string/settings_pref_title_username"
+      android:summary="@string/settings_pref_summary_username"
+      android:defaultValue="@string/default_username" />
+    <androidx.preference.EditTextPreference
+      android:key="password"
+      app:iconSpaceReserved="false"
+      android:title="@string/settings_pref_title_password"
+      android:summary="@string/settings_pref_summary_password"
+      android:defaultValue="@string/default_password"/>
+  </androidx.preference.PreferenceCategory>
+</androidx.preference.PreferenceScreen>

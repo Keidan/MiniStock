@@ -11,7 +11,6 @@ package fr.ralala.ministock.db;
  */
 public enum DBBroadcastType {
   EXIT, /* Internal service */
-  SHOW_PROGRESS,  /* S2A */
   SEND,  /* A2S */
   SOCKET_ERROR, /* S2A */
   READ, /* S2A */

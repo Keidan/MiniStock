@@ -38,7 +38,7 @@ public class DBService extends Service {
           if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.TIRAMISU)
             bm = intent.getSerializableExtra(name, DBBroadcastMessage.class);
           else
-            bm = (DBBroadcastMessage)intent.getSerializableExtra(name);
+            bm = (DBBroadcastMessage) intent.getSerializableExtra(name);
           if (bm.getBroadcastType() == DBBroadcastType.SEND) {
             try {
               mQueue.put(bm);

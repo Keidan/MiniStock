@@ -1,4 +1,4 @@
-package fr.ralala.ministock.db.models;
+package fr.ralala.ministock.models;
 
 import android.content.Context;
 import android.graphics.Bitmap;
@@ -69,7 +69,7 @@ public class CartEntry implements Serializable {
   }
 
   public void sortItems() {
-    mItems.sort(Comparator.comparing(CartItem::getCreationDate));
+    mItems.sort(Comparator.comparing(CartItem::getDate));
   }
 
   /**

@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -19,18 +20,21 @@ import androidx.appcompat.widget.AppCompatTextView;
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.android.material.textfield.TextInputLayout;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 import java.util.Objects;
 
 import fr.ralala.ministock.ApplicationCtx;
 import fr.ralala.ministock.R;
 import fr.ralala.ministock.db.DBService;
-import fr.ralala.ministock.db.models.CartEntry;
-import fr.ralala.ministock.db.models.CartItem;
+import fr.ralala.ministock.models.CartEntry;
+import fr.ralala.ministock.models.CartItem;
 import fr.ralala.ministock.ui.adapters.AdapterCartItems;
 import fr.ralala.ministock.ui.launchers.LauncherPickPhoto;
-import fr.ralala.ministock.ui.launchers.LauncherScanActivity;
 import fr.ralala.ministock.ui.utils.UIHelper;
 
 /**
@@ -52,7 +56,6 @@ public class CartItemActivity extends AppCompatActivity implements AdapterCartIt
   private TextInputEditText mTietTitle;
   private TextInputLayout mTilTitle;
   private ApplicationCtx mApp;
-  private LauncherScanActivity mLauncherScanActivity;
   private AdapterCartItems mItemsAdapter;
 
   /**
@@ -82,7 +85,6 @@ public class CartItemActivity extends AppCompatActivity implements AdapterCartIt
       actionBar.setDisplayHomeAsUpEnabled(true);
     }
     mApp = (ApplicationCtx) getApplication();
-    mLauncherScanActivity = new LauncherScanActivity(this);
     LauncherPickPhoto launcherPickPhoto = new LauncherPickPhoto(this);
 
     mIbLogo = findViewById(R.id.ibLogo);
@@ -103,7 +105,7 @@ public class CartItemActivity extends AppCompatActivity implements AdapterCartIt
     });
     lv.setAdapter(mItemsAdapter);
     ivAdd.setOnClickListener(v -> {
-      mItemsAdapter.add(new CartItem("", CartItem.getDate()));
+      mItemsAdapter.add(new CartItem(CartItem.getDateNow()));
       tvItemsCount.setText(String.valueOf(mItemsAdapter.getCount()));
     });
 
@@ -185,17 +187,6 @@ public class CartItemActivity extends AppCompatActivity implements AdapterCartIt
   }
 
   /**
-   * Sets the Qr code data.
-   *
-   * @param data Data
-   */
-  public void setQrCode(CartItem ci, int position, String data) {
-    ci.setQrCodeId(data);
-    mItemsAdapter.getItems().get(position).setQrCodeId(data);
-    mItemsAdapter.notifyDataSetChanged();
-  }
-
-  /**
    * Called when the options item is clicked (home and cancel).
    *
    * @param item The selected menu.
@@ -260,7 +251,22 @@ public class CartItemActivity extends AppCompatActivity implements AdapterCartIt
 
   @Override
   public void onClick(CartItem ci, int position) {
-    mLauncherScanActivity.start(ci, position);
+    Calendar calendar = Calendar.getInstance();
+    final SimpleDateFormat sdf = CartItem.getSimpleDateFormat();
+    try {
+      calendar.setTime(Objects.requireNonNull(sdf.parse(ci.getDate())));
+    } catch (ParseException pe) {
+      calendar.setTime(new Date());
+      Log.e(getClass().getSimpleName(), "Exception: " + pe.getMessage(), pe);
+    }
+    UIHelper.openDatePicker(this, calendar, (view, selectedYear, selectedMonth, selectedDay) -> {
+      Calendar cal = Calendar.getInstance();
+      cal.set(Calendar.YEAR, selectedYear);
+      cal.set(Calendar.MONTH, selectedMonth);
+      cal.set(Calendar.DAY_OF_MONTH, selectedDay);
+      mItemsAdapter.getItem(position).setDate(sdf.format(cal));
+      mItemsAdapter.notifyDataSetChanged();
+    });
   }
 
 }

@@ -33,7 +33,7 @@ function extractItems($valItems)
   $items = "";
   foreach($valItems as $item)
   {
-    $items .= "{\"version\": \"" . $item['version'] . "\", \"qrCodeId\": \"" . $item['qrCodeId'] . "\", \"creationDate\": \"" . $item['creationDate'] . "\"},";
+    $items .= "{\"version\": \"" . $item['version'] . "\", \"date\": \"" . $item['date'] . "\"},";
   }
   if(endsWith($items, ","))
     $items = substr($items, 0, strlen($items) - 1);

@@ -14,8 +14,8 @@ import androidx.recyclerview.widget.RecyclerView;
 import java.util.List;
 
 import fr.ralala.ministock.R;
-import fr.ralala.ministock.db.models.CartEntry;
-import fr.ralala.ministock.db.models.CartItem;
+import fr.ralala.ministock.models.CartEntry;
+import fr.ralala.ministock.models.CartItem;
 
 /**
  * ******************************************************************************
@@ -85,7 +85,7 @@ public class AdapterCartEntries extends RecyclerView.Adapter<AdapterCartEntries.
       viewHolder.ivLogo.setImageBitmap(t.getImage());
       viewHolder.tvCount.setText(String.valueOf(items.size()));
       if (!items.isEmpty())
-        viewHolder.tvCreation.setText(items.get(0).getCreationDate());
+        viewHolder.tvDate.setText(items.get(0).getDate());
     }
   }
 
@@ -136,14 +136,14 @@ public class AdapterCartEntries extends RecyclerView.Adapter<AdapterCartEntries.
     AppCompatTextView tvLogo;
     AppCompatImageView ivLogo;
     AppCompatTextView tvCount;
-    AppCompatTextView tvCreation;
+    AppCompatTextView tvDate;
 
     ViewHolder(View view) {
       super(view);
       tvLogo = view.findViewById(R.id.tvLogo);
       ivLogo = view.findViewById(R.id.ivLogo);
       tvCount = view.findViewById(R.id.tvCount);
-      tvCreation = view.findViewById(R.id.tvCreation);
+      tvDate = view.findViewById(R.id.tvDate);
     }
   }
 }

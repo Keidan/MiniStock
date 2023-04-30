@@ -4,48 +4,22 @@
   android:layout_height="wrap_content">
 
   <ImageView
-    android:id="@+id/ivPhoto"
+    android:id="@+id/ivDate"
     android:layout_width="36dp"
     android:layout_height="36dp"
     android:layout_alignParentStart="true"
     android:contentDescription="@null"
     android:background="?android:attr/selectableItemBackground"
-    android:src="@drawable/button_scan_on_white" />
+    android:src="@drawable/calendar" />
 
   <androidx.appcompat.widget.AppCompatTextView
-    android:id="@+id/tvCodeLabel"
+    android:id="@+id/tvDate"
     android:layout_width="wrap_content"
-    android:layout_height="wrap_content"
-    android:layout_alignParentTop="true"
-    android:layout_marginStart="15dp"
-    android:layout_toEndOf="@id/ivPhoto"
-    android:text="@string/qrcode_hint" />
-
-  <androidx.appcompat.widget.AppCompatTextView
-    android:id="@+id/tvCode"
-    android:layout_width="wrap_content"
-    android:layout_height="wrap_content"
-    android:layout_marginStart="15dp"
-    android:layout_alignParentTop="true"
-    android:layout_toEndOf="@id/tvCodeLabel"
-    android:text="@null" />
-
-  <androidx.appcompat.widget.AppCompatTextView
-    android:id="@+id/tvCreationLabel"
-    android:layout_width="wrap_content"
-    android:layout_height="wrap_content"
-    android:layout_marginStart="15dp"
-    android:layout_below="@id/tvCode"
-    android:layout_toEndOf="@id/ivPhoto"
-    android:text="@string/creation_hint" />
-
-  <androidx.appcompat.widget.AppCompatTextView
-    android:id="@+id/tvCreation"
-    android:layout_width="wrap_content"
-    android:layout_height="wrap_content"
+    android:layout_height="36dp"
     android:layout_marginStart="13dp"
-    android:layout_below="@id/tvCode"
-    android:layout_toEndOf="@id/tvCreationLabel"
+    android:gravity="center"
+    android:textAlignment="center"
+    android:layout_toEndOf="@id/ivDate"
     android:text="@null"  />
 
 </RelativeLayout>

@@ -18,14 +18,13 @@
     <item name="colorControlNormal">@color/colorControlNormal</item>
     <item name="android:itemBackground">@color/windowBackground</item>
     <item name="android:colorBackground">@color/colorBackground</item>
+    <item name="android:textColorAlertDialogListItem">@color/textColor</item>
 
     <item name="alertDialogTheme">@style/AppTheme.DialogTheme</item>
     <item name="android:alertDialogTheme">@style/AppTheme.DialogTheme</item>
     <item name="android:spinnerDropDownItemStyle">@style/SpinnerItemStyle</item>
     <item name="android:checkboxStyle">@style/CheckBoxStyle</item>
     <item name="android:radioButtonStyle">@style/RadioButtonStyle</item>
-    <item name="android:homeAsUpIndicator">@drawable/arrow_left_white</item>
-    <item name="*android:actionModeShareDrawable">@drawable/arrow_left_white</item>
   </style>
 
   <style name="AppTheme.DialogTheme" parent="Theme.AppCompat.Light.Dialog.Alert">
@@ -38,6 +37,7 @@
     <item name="buttonBarNegativeButtonStyle">@style/NegativeButtonStyle</item>
     <item name="buttonBarPositiveButtonStyle">@style/PositiveButtonStyle</item>
     <item name="android:textColorAlertDialogListItem">@color/textColor</item>
+    <item name="textColorAlertDialogListItem">@color/textColor</item>
   </style>
 
   <style name="NegativeButtonStyle" parent="Widget.AppCompat.Button.ButtonBar.AlertDialog">

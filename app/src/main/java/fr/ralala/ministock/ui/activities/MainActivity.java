@@ -8,21 +8,20 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.Window;
 import android.widget.Toast;
 
-import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import java.util.List;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 import fr.ralala.ministock.ApplicationCtx;
 import fr.ralala.ministock.R;
 import fr.ralala.ministock.db.DBService;
-import fr.ralala.ministock.db.models.CartEntry;
+import fr.ralala.ministock.models.CartEntry;
 import fr.ralala.ministock.ui.adapters.AdapterCartEntries;
 import fr.ralala.ministock.ui.utils.AppPermissions;
 import fr.ralala.ministock.ui.utils.SwipeEditDeleteRecyclerViewItem;
@@ -40,10 +39,9 @@ import fr.ralala.ministock.ui.utils.UIHelper;
 public class MainActivity extends AppCompatActivity implements SwipeEditDeleteRecyclerViewItem.SwipeEditDeleteRecyclerViewItemListener {
   private static final int BACK_TIME_DELAY = 2000;
   private long mLastBackPressed = -1;
-  private AlertDialog mProgress;
   private ApplicationCtx mApp;
   private AdapterCartEntries mAdapter;
-  private boolean listInProgress = false;
+  private final AtomicBoolean mListInProgress = new AtomicBoolean(false);
   private RecyclerView mRecyclerView;
   private SwipeRefreshLayout mListViewContainer;
   private SwipeRefreshLayout mEmptyViewContainer;
@@ -59,8 +57,6 @@ public class MainActivity extends AppCompatActivity implements SwipeEditDeleteRe
     setContentView(R.layout.activity_main);
     mApp = (ApplicationCtx) getApplication();
     mApp.getDb().setActivity(this);
-
-    mProgress = UIHelper.showCircularProgressDialog(this);
 
     /* permissions */
     if (!AppPermissions.checkPermissions(this)) {
@@ -142,38 +138,6 @@ public class MainActivity extends AppCompatActivity implements SwipeEditDeleteRe
   }
 
   /**
-   * Called when the activity is destroyed.
-   */
-  @Override
-  public void onDestroy() {
-    super.onDestroy();
-    progressHide();
-  }
-
-  /**
-   * Hide the progress dialog.
-   */
-  public void progressHide() {
-    if (mProgress.isShowing())
-      mProgress.dismiss();
-  }
-
-  /**
-   * Show the progress dialog.
-   */
-  public void progressShow() {
-    if (!listInProgress && !mProgress.isShowing()) {
-      mProgress.show();
-      Window window = mProgress.getWindow();
-      if (window != null) {
-        window.setLayout(350, 350);
-        View v = window.getDecorView();
-        v.setBackgroundResource(R.drawable.rounded_border);
-      }
-    }
-  }
-
-  /**
    * Called when the fragment is resumed.
    */
   @Override
@@ -194,7 +158,7 @@ public class MainActivity extends AppCompatActivity implements SwipeEditDeleteRe
    * Functions called to refresh the list.
    */
   private void refresh() {
-    listInProgress = true;
+    mListInProgress.set(true);
     mApp.getDb().list(this, (requestId, data) -> {
       mListViewContainer.setRefreshing(false);
       mEmptyViewContainer.setRefreshing(false);
@@ -203,7 +167,7 @@ public class MainActivity extends AppCompatActivity implements SwipeEditDeleteRe
       mAdapter = new AdapterCartEntries(mRecyclerView, li);
       mRecyclerView.setAdapter(mAdapter);
       mAdapter.safeNotifyDataSetChanged();
-      listInProgress = false;
+      mListInProgress.set(false);
       if (mAdapter.getItemCount() != 0)
         mEmptyViewContainer.setVisibility(View.GONE);
       else
@@ -213,7 +177,7 @@ public class MainActivity extends AppCompatActivity implements SwipeEditDeleteRe
       mEmptyViewContainer.setRefreshing(false);
       UIHelper.showAlertDialog(this, R.string.error,
         getString(R.string.error_list_entries) + " : (" + code + ") " + description);
-      listInProgress = false;
+      mListInProgress.set(false);
       if (mAdapter != null && mAdapter.getItemCount() != 0)
         mEmptyViewContainer.setVisibility(View.GONE);
       else
@@ -235,6 +199,7 @@ public class MainActivity extends AppCompatActivity implements SwipeEditDeleteRe
 
   /**
    * Called to handle the click on the back button.
+   *
    * @deprecated For the moment I continue with this.
    */
   @Deprecated

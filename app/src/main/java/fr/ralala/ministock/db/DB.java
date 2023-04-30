@@ -15,7 +15,7 @@ import java.util.List;
 
 import fr.ralala.ministock.ApplicationCtx;
 import fr.ralala.ministock.R;
-import fr.ralala.ministock.db.models.CartEntry;
+import fr.ralala.ministock.models.CartEntry;
 import fr.ralala.ministock.ui.activities.MainActivity;
 import fr.ralala.ministock.ui.utils.UIHelper;
 
@@ -94,10 +94,8 @@ public class DB extends BroadcastReceiver {
         if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.TIRAMISU)
           bm = intent.getSerializableExtra(name, DBBroadcastMessage.class);
         else
-          bm = (DBBroadcastMessage)intent.getSerializableExtra(name);
-        if (bm.getBroadcastType() == DBBroadcastType.SHOW_PROGRESS)
-          mActivity.runOnUiThread(mActivity::progressShow);
-        else if (bm.getBroadcastType() == DBBroadcastType.READ)
+          bm = (DBBroadcastMessage) intent.getSerializableExtra(name);
+        if (bm.getBroadcastType() == DBBroadcastType.READ)
           processRead(bm);
         else if (bm.getBroadcastType() == DBBroadcastType.SOCKET_ERROR)
           processSocketError(bm);
@@ -127,7 +125,6 @@ public class DB extends BroadcastReceiver {
         mList.add(req);
       }
     }
-    mActivity.runOnUiThread(mActivity::progressHide);
   }
 
   /**
@@ -182,7 +179,6 @@ public class DB extends BroadcastReceiver {
         message += t.getMessage();
         Log.e(getClass().getName(), EXCEPTION + t.getMessage(), t);
         mAlertDialogError = UIHelper.showAlertDialog(mActivity, R.string.error, message);
-        mActivity.progressHide();
       }
     });
   }

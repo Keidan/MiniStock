@@ -56,11 +56,9 @@ public class AppPermissions {
     return ContextCompat.checkSelfPermission(a,
       Manifest.permission.INTERNET) == PackageManager.PERMISSION_GRANTED &&
       ContextCompat.checkSelfPermission(a,
-        Manifest.permission.CAMERA) == PackageManager.PERMISSION_GRANTED &&
+        Manifest.permission.READ_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED &&
       ContextCompat.checkSelfPermission(a,
-        Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED &&
-      ContextCompat.checkSelfPermission(a,
-        Manifest.permission.READ_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED;
+        Manifest.permission.VIBRATE) == PackageManager.PERMISSION_GRANTED;
   }
 
   /**
@@ -70,8 +68,6 @@ public class AppPermissions {
     ActivityCompat.requestPermissions(a, new String[]{
       Manifest.permission.INTERNET,
       Manifest.permission.VIBRATE,
-      Manifest.permission.CAMERA,
-      Manifest.permission.WRITE_EXTERNAL_STORAGE,
       Manifest.permission.READ_EXTERNAL_STORAGE,
     }, PERMISSIONS_REQUEST);
   }
@@ -81,10 +77,9 @@ public class AppPermissions {
    * it will be displayed after this call and a new authorization request will be made.
    */
   public static void shouldShowRequest(Activity a) {
-    if (ActivityCompat.shouldShowRequestPermissionRationale(a, Manifest.permission.BLUETOOTH) ||
-      ActivityCompat.shouldShowRequestPermissionRationale(a, Manifest.permission.BLUETOOTH_ADMIN) ||
-      ActivityCompat.shouldShowRequestPermissionRationale(a, Manifest.permission.ACCESS_COARSE_LOCATION) ||
-      ActivityCompat.shouldShowRequestPermissionRationale(a, Manifest.permission.ACCESS_FINE_LOCATION)) {
+    if (ActivityCompat.shouldShowRequestPermissionRationale(a, Manifest.permission.INTERNET) ||
+      ActivityCompat.shouldShowRequestPermissionRationale(a, Manifest.permission.VIBRATE) ||
+      ActivityCompat.shouldShowRequestPermissionRationale(a, Manifest.permission.READ_EXTERNAL_STORAGE)) {
       UIHelper.showAlertDialog(a,
         R.string.permissions_title,
         a.getString(R.string.permissions_required),

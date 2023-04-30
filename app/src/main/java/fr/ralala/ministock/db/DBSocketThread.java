@@ -94,8 +94,6 @@ public class DBSocketThread extends Thread {
   }
 
   private void processSend(DBBroadcastMessage bm) {
-    mApp.sendBroadcastFromServiceToActivity(
-      new DBBroadcastMessage(DBBroadcastType.SHOW_PROGRESS));
     HttpURLConnection connection = null;
     String[] request = bm.getData();
     String[] response = new String[DBHelper.IDX_RESP_DATA + 1];
