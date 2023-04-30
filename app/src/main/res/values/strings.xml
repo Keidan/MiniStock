@@ -6,6 +6,7 @@
   <string name="default_port">YOUR_DEFAULT_WEB_PORT</string>
   <string name="default_page">/mini-stock-provider/</string>
   <string name="default_check_update_startup">true</string>
+
   <string name="app_name">MiniStock</string>
   <string name="title_hint">Title</string>
   <string name="count_hint">Count</string>
@@ -46,6 +47,7 @@
   <string name="settings_pref_summary_check_update_startup">Checks if an update is available when the application starts.</string>
   <string name="settings_pref_title_check_update">Check for update</string>
   <string name="settings_pref_summary_check_update">Checks if an update is available.</string>
+  <string name="settings_pref_title_version">Version</string>
   <string name="error_invalid_host">Invalid web address value</string>
   <string name="error_invalid_port">Invalid web port value</string>
   <string name="error_invalid_page">Invalid web page value (The page must at least be "/").</string>

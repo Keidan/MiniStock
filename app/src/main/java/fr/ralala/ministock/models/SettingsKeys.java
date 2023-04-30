@@ -21,6 +21,7 @@ public final class SettingsKeys {
   public static final String CFG_PAGE = "page";
   public static final String CFG_CHECK_UPDATE = "checkUpdate";
   public static final String CFG_CHECK_UPDATE_ON_START = "checkUpdateOnStart";
+  public static final String CFG_VERSION = "version";
 
   private SettingsKeys() {
   }

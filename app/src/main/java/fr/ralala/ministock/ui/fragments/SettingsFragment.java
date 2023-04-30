@@ -1,5 +1,7 @@
 package fr.ralala.ministock.ui.fragments;
 
+import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.text.InputType;
 import android.text.TextUtils;
@@ -12,6 +14,7 @@ import androidx.preference.Preference;
 import androidx.preference.PreferenceFragmentCompat;
 
 import fr.ralala.ministock.ApplicationCtx;
+import fr.ralala.ministock.BuildConfig;
 import fr.ralala.ministock.R;
 import fr.ralala.ministock.models.SettingsKeys;
 import fr.ralala.ministock.ui.utils.UIHelper;
@@ -29,13 +32,15 @@ import fr.ralala.ministock.update.CheckUpdate;
  * </p>
  * ******************************************************************************
  */
-public class SettingsFragment extends PreferenceFragmentCompat implements Preference.OnPreferenceChangeListener {
+public class SettingsFragment extends PreferenceFragmentCompat implements Preference.OnPreferenceChangeListener, Preference.OnPreferenceClickListener {
+  private static final String GITHUB_URL = "https://github.com/Keidan/MiniStock";
   private EditTextPreference mPrefHost;
   private EditTextPreference mPrefPort;
   private EditTextPreference mPrefPage;
   private EditTextPreference mPrefUsername;
   private EditTextPreference mPrefPassword;
-
+  private Preference mUpdate;
+  private Preference mVersion;
   /**
    * Called during onCreate(Bundle) to supply the preferences for this fragment.
    *
@@ -47,8 +52,8 @@ public class SettingsFragment extends PreferenceFragmentCompat implements Prefer
   @Override
   public void onCreatePreferences(Bundle savedInstanceState, String rootKey) {
     setPreferencesFromResource(R.xml.preferences, rootKey);
-
-    Preference update = findPreference(SettingsKeys.CFG_CHECK_UPDATE);
+    mVersion = findPreference(SettingsKeys.CFG_VERSION);
+    mUpdate = findPreference(SettingsKeys.CFG_CHECK_UPDATE);
     ListPreference protocol = findPreference(SettingsKeys.CFG_PROTOCOL);
     mPrefHost = findPreference(SettingsKeys.CFG_HOST);
     mPrefPort = findPreference(SettingsKeys.CFG_PORT);
@@ -61,6 +66,8 @@ public class SettingsFragment extends PreferenceFragmentCompat implements Prefer
     mPrefPage.setOnPreferenceChangeListener(this);
     mPrefUsername.setOnPreferenceChangeListener(this);
     mPrefPassword.setOnPreferenceChangeListener(this);
+    mVersion.setOnPreferenceClickListener(this);
+    mUpdate.setOnPreferenceClickListener(this);
 
     updateInputType(mPrefHost, InputType.TYPE_TEXT_VARIATION_WEB_EMAIL_ADDRESS);
     updateInputType(mPrefPage, InputType.TYPE_TEXT_VARIATION_WEB_EMAIL_ADDRESS);
@@ -71,11 +78,7 @@ public class SettingsFragment extends PreferenceFragmentCompat implements Prefer
     ApplicationCtx app = (ApplicationCtx) requireActivity().getApplication();
     if (null != protocol)
       protocol.setDefaultValue(app.getProtocol());
-    if (update != null)
-      update.setOnPreferenceClickListener(p -> {
-        new CheckUpdate(getContext(), false).execute(null);
-        return true;
-      });
+    mVersion.setSummary(BuildConfig.VERSION_NAME);
   }
 
   private void updateInputType(EditTextPreference etp, int clazz) {
@@ -87,6 +90,26 @@ public class SettingsFragment extends PreferenceFragmentCompat implements Prefer
       }
       editText.selectAll();
     });
+  }
+
+  /**
+   * Called when a preference has been clicked.
+   *
+   * @param preference The preference that was clicked
+   * @return {@code true} if the click was handled
+   */
+  @Override
+  public boolean onPreferenceClick(Preference preference) {
+    if(preference.equals(mUpdate)) {
+      new CheckUpdate(getContext(), false).execute(null);
+      return true;
+    }
+    else if(preference.equals(mVersion)) {
+      Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(GITHUB_URL));
+      startActivity(browserIntent);
+      return true;
+    }
+    return false;
   }
 
   /**
