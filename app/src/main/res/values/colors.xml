@@ -12,10 +12,6 @@
   <color name="colorButtonNormal">#FF424242</color>
   <color name="colorBackground">#FF424242</color>
   <color name="colorControlNormal">#FF424242</color>
-  <color name="transparencyButtonBackground">#37FFFFFF</color>
-  <color name="transparencyButtonBorder">#2FFFFFFF</color>
-  <color name="transparencyButtonBackgroundFocused">#3DFFFFFF</color>
-  <color name="transparencyButtonBackgroundPressed">#6AFFFFFF</color>
   <color name="red">#FFB91515</color>
   <color name="item_edit">#c883ce8f</color>
   <color name="item_delete">#c8cb4f59</color>

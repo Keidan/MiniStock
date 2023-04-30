@@ -71,11 +71,4 @@
     <item name="android:textColor">@color/red</item>
     <item name="android:textSize">12sp</item>
   </style>
-
-  <style name="InputLabel" parent="TextAppearance.AppCompat.Caption">
-    <item name="android:textColor">@color/colorAccent</item>
-    <item name="android:paddingBottom">@dimen/input_label_paddingBottom</item>
-    <item name="android:paddingStart">@dimen/input_label_paddingStart</item>
-    <item name="android:paddingEnd">@dimen/input_label_paddingEnd</item>
-  </style>
 </resources>
