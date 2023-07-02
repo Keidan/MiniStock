@@ -10,8 +10,6 @@ import android.content.SharedPreferences;
 
 import androidx.preference.PreferenceManager;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Locale;
 
 import fr.ralala.ministock.db.DB;
