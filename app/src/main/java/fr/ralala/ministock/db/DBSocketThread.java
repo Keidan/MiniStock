@@ -138,6 +138,11 @@ public class DBSocketThread extends Thread {
         connection.disconnect();
       }
     }
+    if(response[DBHelper.IDX_RESP_CODE].equals("200") &&
+      DBAction.fromString(response[DBHelper.IDX_RESP_ACTION]) == DBAction.LIST) {
+      mApp.setItemsData(response[DBHelper.IDX_RESP_DATA]);
+      response[DBHelper.IDX_RESP_DATA] = null;
+    }
     mApp.sendBroadcastFromServiceToActivity(
       new DBBroadcastMessage(DBBroadcastType.READ, response));
   }

@@ -113,6 +113,11 @@ public class DB extends BroadcastReceiver {
     int requestId = Integer.parseInt(response[DBHelper.IDX_RESP_ID]);
     int code = Integer.parseInt(response[DBHelper.IDX_RESP_CODE]);
     String data = response[DBHelper.IDX_RESP_DATA];
+    if(code == 200 &&
+      DBAction.fromString(response[DBHelper.IDX_RESP_ACTION]) == DBAction.LIST) {
+      data = mApp.getItemsData();
+      mApp.setItemsData(null);
+    }
     DBAction act = DBAction.fromString(response[DBHelper.IDX_RESP_ACTION]);
     List<DBRequest> list = new ArrayList<>(mList);
     for (DBRequest req : list) {

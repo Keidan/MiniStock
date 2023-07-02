@@ -10,6 +10,8 @@ import android.content.SharedPreferences;
 
 import androidx.preference.PreferenceManager;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Locale;
 
 import fr.ralala.ministock.db.DB;
@@ -30,12 +32,20 @@ public class ApplicationCtx extends Application {
   public static final String ACTION_STRING_S2A = "S2A";
   private DB mDB;
   private SharedPreferences mPrefs;
+  private String mItemsData = null;
 
   @Override
   public void onCreate() {
     super.onCreate();
     mPrefs = PreferenceManager.getDefaultSharedPreferences(this);
     mDB = DB.getInstance(this);
+  }
+
+  public void setItemsData(final String itemsData) {
+    mItemsData = itemsData;
+  }
+  public String getItemsData() {
+    return mItemsData;
   }
 
   /**

@@ -15,6 +15,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
+import java.text.Collator;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicBoolean;
 
@@ -46,6 +47,7 @@ public class MainActivity extends AppCompatActivity implements SwipeEditDeleteRe
   private RecyclerView mRecyclerView;
   private SwipeRefreshLayout mListViewContainer;
   private SwipeRefreshLayout mEmptyViewContainer;
+  private Collator mCollator;
 
   /**
    * Called when the activity is created.
@@ -56,6 +58,8 @@ public class MainActivity extends AppCompatActivity implements SwipeEditDeleteRe
   protected void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
     setContentView(R.layout.activity_main);
+    mCollator = Collator.getInstance();
+    mCollator.setStrength(Collator.PRIMARY);
     mApp = (ApplicationCtx) getApplication();
     mApp.getDb().setActivity(this);
 
@@ -168,6 +172,8 @@ public class MainActivity extends AppCompatActivity implements SwipeEditDeleteRe
       mEmptyViewContainer.setRefreshing(false);
       @SuppressWarnings("unchecked")
       List<CartEntry> li = (List<CartEntry>) data;
+      /* sort */
+      li.sort((a, b) -> mCollator.compare(a.getTitle(), b.getTitle()));
       mAdapter = new AdapterCartEntries(mRecyclerView, li);
       mRecyclerView.setAdapter(mAdapter);
       mAdapter.safeNotifyDataSetChanged();
