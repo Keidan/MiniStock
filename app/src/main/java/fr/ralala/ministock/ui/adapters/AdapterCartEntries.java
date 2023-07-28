@@ -5,13 +5,17 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Filter;
+import android.widget.Filterable;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.widget.AppCompatImageView;
 import androidx.appcompat.widget.AppCompatTextView;
 import androidx.recyclerview.widget.RecyclerView;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 
 import fr.ralala.ministock.R;
 import fr.ralala.ministock.models.CartEntry;
@@ -26,9 +30,11 @@ import fr.ralala.ministock.models.CartItem;
  * @author Keidan
  * ******************************************************************************
  */
-public class AdapterCartEntries extends RecyclerView.Adapter<AdapterCartEntries.ViewHolder> {
+public class AdapterCartEntries extends RecyclerView.Adapter<AdapterCartEntries.ViewHolder> implements Filterable {
   private static final int RES_ID = R.layout.view_cart_entry;
-  private final List<CartEntry> mItems;
+  private final List<CartEntry> mItemsReal;
+  private final List<Integer> mItems;
+  private List<Integer> mItemsSearch;
   private final RecyclerView mRecyclerView;
 
   /**
@@ -40,7 +46,18 @@ public class AdapterCartEntries extends RecyclerView.Adapter<AdapterCartEntries.
   public AdapterCartEntries(RecyclerView recyclerView,
                             final List<CartEntry> objects) {
     mRecyclerView = recyclerView;
-    mItems = objects;
+    mItemsReal = objects;
+    mItems = new ArrayList<>();
+    mItemsSearch = new ArrayList<>();
+    for (int i = 0; i < mItemsReal.size(); i++) {
+      mItems.add(i);
+      mItemsSearch.add(i);
+    }
+  }
+
+  private CartEntry getCartEntry(int i) {
+    int j = mItemsSearch.get(i);
+    return mItemsReal.size() <= j ? null : mItemsReal.get(j);
   }
 
   /**
@@ -50,7 +67,7 @@ public class AdapterCartEntries extends RecyclerView.Adapter<AdapterCartEntries.
    * @return T
    */
   public CartEntry getItem(int position) {
-    return mItems.get(position);
+    return getCartEntry(position);
   }
 
   /**
@@ -74,10 +91,10 @@ public class AdapterCartEntries extends RecyclerView.Adapter<AdapterCartEntries.
    */
   @Override
   public void onBindViewHolder(@NonNull AdapterCartEntries.ViewHolder viewHolder, int i) {
-    if (mItems.isEmpty()) return;
-    if (i > mItems.size())
+    if (mItemsSearch.isEmpty()) return;
+    if (i > mItemsSearch.size())
       i = 0;
-    final CartEntry t = mItems.get(i);
+    final CartEntry t = getCartEntry(i);
     if (t != null) {
       t.sortItems();
       List<CartItem> items = t.getItems();
@@ -96,7 +113,7 @@ public class AdapterCartEntries extends RecyclerView.Adapter<AdapterCartEntries.
    */
   @Override
   public int getItemCount() {
-    return mItems.size();
+    return mItemsSearch.size();
   }
 
   /**
@@ -105,7 +122,8 @@ public class AdapterCartEntries extends RecyclerView.Adapter<AdapterCartEntries.
    * @param item The item to add.
    */
   public void addItem(CartEntry item) {
-    mItems.add(item);
+    mItemsReal.add(item);
+    mItems.add(mItemsReal.size());
     safeNotifyDataSetChanged();
   }
 
@@ -115,7 +133,10 @@ public class AdapterCartEntries extends RecyclerView.Adapter<AdapterCartEntries.
    * @param item The item to remove.
    */
   public void removeItem(CartEntry item) {
-    mItems.remove(item);
+    int idx = mItemsReal.indexOf(item);
+    if (idx != -1)
+      mItems.remove(idx);
+    mItemsReal.add(item);
     safeNotifyDataSetChanged();
   }
 
@@ -130,6 +151,54 @@ public class AdapterCartEntries extends RecyclerView.Adapter<AdapterCartEntries.
     } catch (Exception e) {
       Log.e(getClass().getSimpleName(), "Exception: " + e.getMessage(), e);
     }
+  }
+
+  public void setFilteredList(List<Integer> filteredList) {
+    mItemsSearch = filteredList;
+  }
+
+  public List<Integer> apply(CharSequence constraint) {
+    String charString = constraint == null ? "" : constraint.toString().toLowerCase(Locale.ROOT);
+    final List<Integer> filteredList = new ArrayList<>();
+    if (charString.isEmpty())
+      filteredList.addAll(mItems);
+    else {
+      mItemsReal.stream().filter(item -> item.getTitle().toLowerCase(Locale.ROOT).contains(constraint))
+        .forEach(item -> filteredList.add(mItemsReal.indexOf(item)));
+    }
+    return filteredList;
+  }
+
+  /**
+   * Get custom filter
+   *
+   * @return filter
+   */
+  @Override
+  public Filter getFilter() {
+    return new Filter() {
+      @Override
+      protected FilterResults performFiltering(CharSequence constraint) {
+        final List<Integer> filteredList = apply(constraint);
+        FilterResults fr = new FilterResults();
+        fr.count = filteredList.size();
+        fr.values = filteredList;
+        return fr;
+      }
+
+      /**
+       * Notify about filtered list to ui
+       *
+       * @param constraint text
+       * @param results    filtered result
+       */
+      @SuppressWarnings("unchecked")
+      @Override
+      protected void publishResults(CharSequence constraint, FilterResults results) {
+        setFilteredList((List<Integer>) results.values);
+        safeNotifyDataSetChanged();
+      }
+    };
   }
 
   protected static class ViewHolder extends RecyclerView.ViewHolder {

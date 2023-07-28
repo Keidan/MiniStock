@@ -1,13 +1,17 @@
 package fr.ralala.ministock.ui.activities;
 
+import android.app.SearchManager;
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
+import android.text.InputType;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.SearchView;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -48,6 +52,9 @@ public class MainActivity extends AppCompatActivity implements SwipeEditDeleteRe
   private SwipeRefreshLayout mListViewContainer;
   private SwipeRefreshLayout mEmptyViewContainer;
   private Collator mCollator;
+  private MenuItem mSearchMenu = null;
+  private SearchView mSearchView = null;
+  private String mPrevSearch = "";
 
   /**
    * Called when the activity is created.
@@ -105,6 +112,8 @@ public class MainActivity extends AppCompatActivity implements SwipeEditDeleteRe
   public boolean onCreateOptionsMenu(final Menu menu) {
     MenuInflater inflater = getMenuInflater();
     inflater.inflate(R.menu.activity_main, menu);
+    mSearchMenu = menu.findItem(R.id.action_search);
+    setSearchView(mSearchMenu);
     return true;
   }
 
@@ -119,6 +128,7 @@ public class MainActivity extends AppCompatActivity implements SwipeEditDeleteRe
       return;
     CartEntry entry = mAdapter.getItem(adapterPosition);
     if (entry == null) return;
+    hideSearch();
     CartItemActivity.startActivity(this, entry);
   }
 
@@ -167,6 +177,7 @@ public class MainActivity extends AppCompatActivity implements SwipeEditDeleteRe
    */
   private void refresh() {
     mListInProgress.set(true);
+    UIHelper.hideKeyboard(this);
     mApp.getDb().list(this, (requestId, data) -> {
       mListViewContainer.setRefreshing(false);
       mEmptyViewContainer.setRefreshing(false);
@@ -175,8 +186,8 @@ public class MainActivity extends AppCompatActivity implements SwipeEditDeleteRe
       /* sort */
       li.sort((a, b) -> mCollator.compare(a.getTitle(), b.getTitle()));
       mAdapter = new AdapterCartEntries(mRecyclerView, li);
+      mAdapter.setFilteredList(mAdapter.apply(mPrevSearch));
       mRecyclerView.setAdapter(mAdapter);
-      mAdapter.safeNotifyDataSetChanged();
       mListInProgress.set(false);
       if (mAdapter.getItemCount() != 0)
         mEmptyViewContainer.setVisibility(View.GONE);
@@ -216,6 +227,7 @@ public class MainActivity extends AppCompatActivity implements SwipeEditDeleteRe
   @Override
   @SuppressWarnings("squid:S1133")
   public void onBackPressed() {
+    hideSearch();
     if (mLastBackPressed + BACK_TIME_DELAY > System.currentTimeMillis()) {
       super.onBackPressed();
       return;
@@ -234,12 +246,57 @@ public class MainActivity extends AppCompatActivity implements SwipeEditDeleteRe
   @Override
   public boolean onOptionsItemSelected(MenuItem item) {
     if (item.getItemId() == R.id.action_add) {
+      hideSearch();
       CartItemActivity.startActivity(this, null);
       return true;
     } else if (item.getItemId() == R.id.action_settings) {
+      hideSearch();
       startActivity(new Intent(this, SettingsActivity.class));
       return true;
     }
     return super.onOptionsItemSelected(item);
+  }
+
+
+  /* ---------------------------- */
+  /* Search */
+  /* ---------------------------- */
+  private void doSearch(String str) {
+    mPrevSearch = str;
+    mAdapter.getFilter().filter(str);
+  }
+
+  private void hideSearch() {
+    if (mSearchView != null && mSearchMenu != null) {
+      if (!mSearchView.isIconified()) {
+        doSearch("");
+        mSearchView.onActionViewCollapsed();
+      }
+      mSearchView.clearFocus();
+      UIHelper.hideKeyboard(this);
+    }
+  }
+
+  private void setSearchView(MenuItem si) {
+    // Searchable configuration
+    SearchManager searchManager = (SearchManager) getSystemService(Context.SEARCH_SERVICE);
+    if (searchManager != null) {
+      mSearchView = (SearchView) si.getActionView();
+      mSearchView.setSearchableInfo(searchManager
+        .getSearchableInfo(getComponentName()));
+      mSearchView.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_VISIBLE_PASSWORD);
+      mSearchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+        @Override
+        public boolean onQueryTextSubmit(String s) {
+          return true;
+        }
+
+        @Override
+        public boolean onQueryTextChange(String s) {
+          doSearch(s);
+          return true;
+        }
+      });
+    }
   }
 }

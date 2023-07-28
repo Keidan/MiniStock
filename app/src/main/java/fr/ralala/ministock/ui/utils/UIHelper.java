@@ -1,6 +1,7 @@
 package fr.ralala.ministock.ui.utils;
 
 
+import android.app.Activity;
 import android.app.DatePickerDialog;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -11,6 +12,7 @@ import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.os.Parcelable;
 import android.view.View;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.ImageView;
 import android.widget.Toast;
 
@@ -210,5 +212,21 @@ public class UIHelper {
   public static void openDatePicker(final Context c, final Calendar current, DatePickerDialog.OnDateSetListener li) {
     DatePickerDialog dpd = new DatePickerDialog(c, li, current.get(Calendar.YEAR), current.get(Calendar.MONTH), current.get(Calendar.DAY_OF_MONTH));
     dpd.show();
+  }
+
+  /**
+   * Hides the keyboard.
+   * @param activity The displayed activity.
+   */
+  public static void hideKeyboard(final Activity activity) {
+    /* hide keyboard */
+    InputMethodManager imm = (InputMethodManager) activity.getSystemService(Context.INPUT_METHOD_SERVICE);
+    if (imm.isAcceptingText()) {
+      View view = activity.getCurrentFocus();
+      if (view == null) {
+        view = new View(activity);
+      }
+      imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
+    }
   }
 }
