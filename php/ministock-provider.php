@@ -54,6 +54,7 @@ if (strlen($json_params) > 0 && isValidJSON($json_params))
   $table = $json_data["table"];
   $rangeMin = 0;
   $rangeCount = 0;
+  $noimage = false;
   if (isset($json_data['rangeMin']))
   {
     $rangeMin = intval($json_data['rangeMin']);
@@ -61,6 +62,10 @@ if (strlen($json_params) > 0 && isValidJSON($json_params))
   if (isset($json_data['rangeCount']))
   {
     $rangeCount = intval($json_data['rangeCount']);
+  }
+  if (isset($json_data['noimage']))
+  {
+    $rangeCount = boolval($json_data['noimage']);
   }
 
   $colId = DATABASE_MINISTOCK_COL_ID;
@@ -163,11 +168,14 @@ if (strlen($json_params) > 0 && isValidJSON($json_params))
               $items = "";
               while ($data = $cursor->fetch_assoc())
               {
-                $items .= "\"item" . $index . "\": {\"$colId\": \"" . $data[$colId] .
-                  "\", \"$colVersion\": \"" . $data[$colVersion] .
-                  "\", \"$colTitle\": \"" . $data[$colTitle] .
-                  "\", \"$colImage\": \"" . $data[$colImage] .
-                  "\", \"$colItems\": [" . $data[$colItems] . "]},";
+                $items .= "\"item" . $index . "\": {\"$colId\": \"" . $data[$colId] . "\", ";
+                $items .= "\"$colVersion\": \"" . $data[$colVersion] . "\", ";
+                $items .= "\"$colTitle\": \"" . $data[$colTitle] . "\", ";
+                if(!$noimage)
+                {
+                  $items .= "\"$colImage\": \"" . $data[$colImage] . "\", ";
+                }
+                $items .= "\"$colItems\": [" . $data[$colItems] . "]},";
                 $index++;
               }
               mysqli_free_result($cursor);
@@ -205,11 +213,14 @@ if (strlen($json_params) > 0 && isValidJSON($json_params))
               $items = "";
               while ($data = $cursor->fetch_assoc())
               {
-                $items .= "\"item" . $index . "\": {\"$colId\": \"" . $data[$colId] .
-                  "\", \"$colVersion\": \"" . $data[$colVersion] .
-                  "\", \"$colTitle\": \"" . $data[$colTitle] .
-                  "\", \"$colImage\": \"" . $data[$colImage] .
-                  "\", \"$colItems\": [" . $data[$colItems] . "]},";
+                $items .= "\"item" . $index . "\": {\"$colId\": \"" . $data[$colId] . "\", ";
+                $items .= "\"$colVersion\": \"" . $data[$colVersion] . "\", ";
+                $items .= "\"$colTitle\": \"" . $data[$colTitle] . "\", ";
+                if(!$noimage)
+                {
+                  $items .= "\"$colImage\": \"" . $data[$colImage] . "\", ";
+                }
+                $items .= "\"$colItems\": [" . $data[$colItems] . "]},";
                 $index++;
               }
               mysqli_free_result($cursor);
@@ -240,6 +251,45 @@ if (strlen($json_params) > 0 && isValidJSON($json_params))
               $total = $data["total"];
               mysqli_free_result($cursor);
               $ret = '{"code": 200, "result": "success", "count": ' . $total . "}";
+              http_response_code(200);
+              echo $ret;
+            }
+          }
+          else if (strcmp($action, "GET_IMAGE") == 0)
+          {
+            if ($rangeMin > 0 && $rangeCount > 0)
+            {
+              $cursor = $mysqli->query("SELECT * FROM `$table` WHERE `$colId` = '$valId' LIMIT $rangeMin, $rangeCount");
+            }
+            else
+            {
+              $cursor = $mysqli->query("SELECT * FROM `$table` WHERE `$colId` = '$valId'");
+            }
+            if (!$cursor)
+            {
+              echo response(501, "error", "Unable to execute the SQL request: " . $mysqli->error);
+            }
+            else
+            {
+              $index = $rangeMin;
+              $items = "";
+              while ($data = $cursor->fetch_assoc())
+              {
+                $items .= "\"item" . $index . "\": {\"$colId\": \"" . $data[$colId] . "\", ";
+                $items .= "\"$colImage\": \"" . $data[$colImage] . "\"},";
+                $index++;
+              }
+              mysqli_free_result($cursor);
+              if (endsWith($items, ","))
+              {
+                $items = substr($items, 0, strlen($items) - 1);
+              }
+              $ret = '{"code": 200, "result": "success",' . $items;
+              if (endsWith($ret, ","))
+              {
+                $ret = substr($ret, 0, strlen($ret) - 1);
+              }
+              $ret .= '}';
               http_response_code(200);
               echo $ret;
             }
