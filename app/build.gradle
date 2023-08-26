@@ -4,7 +4,7 @@ plugins {
 
 apply plugin: 'com.android.application'
 
-final SONAR_PROJECT_VERSION = '1.4'
+final SONAR_PROJECT_VERSION = '1.5'
 
 android {
     signingConfigs {
@@ -22,8 +22,8 @@ android {
         applicationId "fr.ralala.ministock"
         minSdk 29
         targetSdk 33
-        versionCode 104
-        versionName "1.4"
+        versionCode 105
+        versionName "1.5"
         signingConfig signingConfigs.config
     }
     buildTypes {
