@@ -171,7 +171,7 @@ public class CartEntry implements Serializable {
 
   private String image2string(Bitmap bmp) {
     ByteArrayOutputStream baos = new ByteArrayOutputStream();
-    bmp.compress(Bitmap.CompressFormat.PNG, 100, baos);
+    bmp.compress(Bitmap.CompressFormat.JPEG, 100, baos);
     return Base64.encodeToString(baos.toByteArray(), Base64.DEFAULT);
   }
 }
