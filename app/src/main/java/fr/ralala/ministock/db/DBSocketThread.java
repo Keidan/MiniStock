@@ -175,8 +175,6 @@ public class DBSocketThread extends Thread {
       sbHost.append(host.substring("www.".length()));
     else
       sbHost.append(host);
-    /*connection.setHostnameVerifier((hostname, session) ->
-      HttpsURLConnection.getDefaultHostnameVerifier().verify(sbHost.toString(), session));*/
     connection.setSSLSocketFactory((SSLSocketFactory) SSLSocketFactory.getDefault());
     return connection;
   }
