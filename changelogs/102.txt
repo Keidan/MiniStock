@@ -1,0 +1,5 @@
+* Modification of the input of the articles.
+* Removal of the qrcode scan.
+* Modification of the settings.
+* Added management of application updates.
+* Added the display of the version.

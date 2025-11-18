@@ -1,0 +1,1 @@
+* Fix a crash and add sorting (with accent handling).

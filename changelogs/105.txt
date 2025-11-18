@@ -1,0 +1,2 @@
+* The image output format has been changed from PNG to JPEG.
+* Modification of the LIST action and addition of a count action.

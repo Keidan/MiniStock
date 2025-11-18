@@ -1,75 +1,108 @@
 plugins {
-    id "org.sonarqube" version "3.5.0.2730"
+  id "org.sonarqube" version "3.5.0.2730"
+  id 'com.android.application'
 }
 
-apply plugin: 'com.android.application'
-
+final COMPILE_WITH_DEPRECATION_LINT = false
 final SONAR_PROJECT_VERSION = '1.5'
 
-android {
-    signingConfigs {
-        config {
-            keyAlias 'MyAndroidKey'
-            keyPassword 'myKeyPassword'
-            storeFile file('android.jks')
-            storePassword 'myStorePassword'
-        }
-    }
-    namespace 'fr.ralala.ministock'
-    compileSdk 33
-    buildToolsVersion "33.0.0"
-    defaultConfig {
-        applicationId "fr.ralala.ministock"
-        minSdk 29
-        targetSdk 33
-        versionCode 105
-        versionName "1.5"
-        signingConfig signingConfigs.config
-    }
-    buildTypes {
-        release {
-            zipAlignEnabled true
-            minifyEnabled true
-            shrinkResources true
-            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
-            signingConfig signingConfigs.config
-        }
-        debug {
-            minifyEnabled false
-            signingConfig signingConfigs.config
-            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules-debug.pro'
-        }
-    }
+// Load signing config only if needed
+def signingEnabled = gradle.startParameter.taskNames.any { it.toLowerCase().contains("signedrelease") }
+def props = loadSigningConfig(signingEnabled)
 
-    compileOptions {
-        sourceCompatibility JavaVersion.VERSION_1_8
-        targetCompatibility JavaVersion.VERSION_1_8
+android {
+  namespace 'fr.ralala.ministock'
+  //noinspection GradleDependency
+  compileSdk 33
+
+  defaultConfig {
+    applicationId "fr.ralala.ministock"
+    minSdk 29
+    //noinspection OldTargetApi
+    targetSdk 33
+    versionCode 105
+    versionName "1.5"
+    vectorDrawables {
+      useSupportLibrary true
     }
-    // This is important, it will run lint checks but won't abort build
-    lintOptions {
-        abortOnError false
+  }
+
+  buildFeatures {
+    buildConfig = true
+  }
+
+  compileOptions {
+    sourceCompatibility JavaVersion.VERSION_17
+    targetCompatibility JavaVersion.VERSION_17
+  }
+
+  signingConfigs {
+    github {
+      if (signingEnabled) {
+        storeFile rootProject.file(props['storeFile'].trim())
+        storePassword props['storePassword'].trim()
+        keyAlias props['keyAlias'].trim()
+        keyPassword props['keyPassword'].trim()
+        v1SigningEnabled true
+        v2SigningEnabled true
+        enableV4Signing true
+      }
     }
-    sonarqube {
-        properties {
-            property "sonar.projectKey", "Keidan_MiniStock"
-            property "sonar.organization", "keidan"
-            property "sonar.host.url", "https://sonarcloud.io"
-            property 'sonar.projectName', 'MiniStock'
-            property 'sonar.projectVersion', SONAR_PROJECT_VERSION
-            property 'sonar.coverage.exclusions', "**/**"
-        }
+  }
+
+  buildTypes {
+    release {
+      minifyEnabled true
+      shrinkResources true
+      proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
     }
+    debug {
+      // to debug ProGuard rules
+      minifyEnabled false
+      proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules-debug.pro'
+    }
+    signedRelease {
+      initWith release
+      matchingFallbacks = ['release']
+      if (signingEnabled) {
+        signingConfig signingConfigs.github
+      }
+    }
+  }
+  buildFeatures {
+    compose true
+  }
+  // This is important, it will run lint checks but won't abort build
+  lintOptions {
+    abortOnError false
+  }
+
+  sonarqube {
+    properties {
+      property "sonar.projectKey", "Keidan_MiniStock"
+      property "sonar.organization", "keidan"
+      property "sonar.host.url", "https://sonarcloud.io"
+      property 'sonar.projectName', 'MiniStock'
+      property 'sonar.projectVersion', SONAR_PROJECT_VERSION
+      property 'sonar.coverage.exclusions', "**/**"
+    }
+  }
 }
 
 dependencies {
-    implementation fileTree(include: ['*.jar'], dir: 'libs')
-    implementation "androidx.appcompat:appcompat:1.6.1"
-    implementation "androidx.preference:preference:1.2.1"
-    implementation "androidx.swiperefreshlayout:swiperefreshlayout:1.1.0"
-    implementation "com.google.android.material:material:1.9.0"
-    implementation 'androidx.exifinterface:exifinterface:1.3.6'
+  implementation fileTree(include: ['*.jar'], dir: 'libs')
+  implementation "androidx.appcompat:appcompat:1.6.1"
+  implementation "androidx.preference:preference:1.2.1"
+  implementation "androidx.swiperefreshlayout:swiperefreshlayout:1.1.0"
+  implementation "com.google.android.material:material:1.9.0"
+  implementation 'androidx.exifinterface:exifinterface:1.3.6'
 }
-
+if(COMPILE_WITH_DEPRECATION_LINT) {
+  tasks.withType(JavaCompile).configureEach {
+    options.compilerArgs += ["-Xlint:deprecation", "-Xlint:unchecked"]
+  }
+}
+/* Tasks */
 // versionCode <-> versionName /////////////////////////////////////////////////////////////////////
 // I got the idea (code) below from the repository https://github.com/sal0max/currencie
 /**
@@ -77,32 +110,60 @@ dependencies {
  * Needed because of F-Droid: both have to be hard-coded and can't be assigned dynamically.
  * So at least check during build for them to match.
  */
-task checkVersion {
-    int versionCode = android.defaultConfig.versionCode
-    String versionName = android.defaultConfig.versionName
-    int correctVersionCode = generateVersionCode(android.defaultConfig.versionName)
-    if (versionCode != correctVersionCode)
-        throw new GradleException(
-          "versionCode and versionName don't match: " +
-            "versionCode should be $correctVersionCode. Is $versionCode."
-        )
-    if (versionName != SONAR_PROJECT_VERSION)
-        throw new GradleException(
-          "versionName and sonar.projectVersion don't match: " +
-            "sonar.projectVersion should be $versionName. Is $SONAR_PROJECT_VERSION."
-        )
+tasks.register('checkVersion') {
+  int versionCode = android.defaultConfig.versionCode
+  String versionName = android.defaultConfig.versionName
+  int correctVersionCode = generateVersionCode(android.defaultConfig.versionName)
+  if (versionCode != correctVersionCode)
+    throw new GradleException(
+        "versionCode and versionName don't match: " +
+        "versionCode should be $correctVersionCode. Is $versionCode."
+    )
+  if (versionName != SONAR_PROJECT_VERSION)
+    throw new GradleException(
+        "versionName and sonar.projectVersion don't match: " +
+        "sonar.projectVersion should be $versionName. Is $SONAR_PROJECT_VERSION."
+    )
 }
 assemble.dependsOn checkVersion
 
+/* functions */
+private Properties loadSigningConfig(boolean signingEnabled) {
+  if (signingEnabled) {
+    def props = new Properties()
+    def propsFile = rootProject.file("keystore.properties")
+    if (!propsFile.exists()) {
+      throw new GradleException("Missing 'keystore.properties' file.")
+    }
+
+    propsFile.withInputStream { props.load(it) }
+
+    def requiredKeys = ['storeFile', 'storePassword', 'keyAlias', 'keyPassword']
+    requiredKeys.each {
+      if (!props.containsKey(it) || props[it].trim().isEmpty()) {
+        throw new GradleException("Missing or empty property: '${it}' in 'keystore.properties'.")
+      }
+    }
+
+    def keystorePath = rootProject.file(props['storeFile'].trim())
+    if (!keystorePath.exists()) {
+      throw new GradleException("Keystore file not found at: ${keystorePath}")
+    }
+    return props
+  }
+  return null
+}
+
 /**
  * Generates a versionCode based on the given semVer String.
- * See e.g. https://proandroiddev.com/keep-salinity-with-your-versioncode-db2089b640b9
- *
  * @param semVer e.g. 1.27
  * @return e.g. 127 (-> 1 27)
+ *
+ * 1.58 -> 158
+ * 1.58.0 -> 15800
+ * 1.0.0 -> 10000
  */
 private static int generateVersionCode(String semVer) {
-    return semVer.split('\\.')
-      .collect { Integer.parseInt(it) }
-      .inject { sum, value -> sum * 100 + value }
+  def parts = semVer.tokenize('.').collect { it.toInteger() }
+  parts.inject(0) { code, part -> code * 100 + part }
 }

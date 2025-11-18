@@ -1,55 +1,156 @@
-# This is a basic workflow to help you get started with Actions
-
 name: Build
 
-# Controls when the workflow will run
+# Trigger conditions
 on:
-  # Triggers the workflow on push or pull request events but only for the master branch
   push:
     branches:
-      - master
+      - '**' # Trigger on push to all branches
+    tags:
+      - 'v*.*'           # match v1.2, v12.34, v1.2.3...
+      - 'v*.*.*'         # match v1.2.3, v0.10.12, etc.
   pull_request:
-    types: [opened, synchronize, reopened]
+    types:
+      # Trigger when PR is created or updated
+      - opened
+      - synchronize
+      - reopened
+  workflow_dispatch: # Manual trigger from the GitHub UI
 
-  # Allows you to run this workflow manually from the Actions tab
-  workflow_dispatch:
-
-# A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
-  # This workflow contains a single job called "build"
-  build:
-    # The type of runner that the job will run on
+  # Compile job: Build and test the app
+  compile:
     runs-on: ubuntu-latest
-
-    # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
-      - name: Checkout the code
-        uses: actions/checkout@v3
+      - name: Debug GitHub context
+        run: |
+          echo "Event: ${{ github.event_name }}, Ref: ${{ github.ref }}, SHA: ${{ github.sha }}"
+      - name: Checkout repository
+        uses: actions/checkout@v4
         with:
-            fetch-depth: 0
-      - name: set up JDK 17
-        uses: actions/setup-java@v3
-        with:
-          java-version: '17'
-          distribution: 'temurin'
-      - name: Cache SonarCloud packages
-        uses: actions/cache@v3
-        with:
-          path: ~/.sonar/cache
-          key: ${{ runner.os }}-sonar
-          restore-keys: ${{ runner.os }}-sonar
-      - name: Cache Gradle packages
-        uses: actions/cache@v3
-        with:
-          path: ~/.gradle/caches
-          key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle') }}
-          restore-keys: ${{ runner.os }}-gradle
-      - name: Make gradlew executable
-        run: chmod +x ./gradlew
+          fetch-depth: 0
+      - uses: ./.github/actions/setup-gradle
       - name: Build the app
-        run: ./gradlew build
-      - name: Build and analyze (master)
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}  # Needed to get PR information, if any
-          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-        run: ./gradlew build sonarqube --info
+        run: ./gradlew assemble
+      - name: Build the tests
+        run: ./gradlew test
+      - uses: ./.github/actions/analyze-with-sonar
+        if: github.event_name != 'pull_request'
+        with:
+          sonar-token: ${{ secrets.SONAR_TOKEN }}
+
+  # Check tag pattern
+  check-tag:
+    runs-on: ubuntu-latest
+    if: startsWith(github.ref, 'refs/tags/')
+    outputs:
+      valid: ${{ steps.check.outputs.valid }}
+    steps:
+      - name: Print tag
+        run: |
+          echo "Tag is: $GITHUB_REF"
+      - name: Check tag format
+        id: check
+        run: |
+          TAG="${GITHUB_REF#refs/tags/}"
+          if [[ "$TAG" =~ ^v[0-9]+(\.[0-9]+){1,2}$ ]]; then
+            echo "valid=true" >> $GITHUB_OUTPUT
+          else
+            echo "valid=false" >> $GITHUB_OUTPUT
+          fi
+
+  # Release job: Signed APK generation and upload
+  release-signed:
+    needs: [compile, check-tag]
+    runs-on: ubuntu-latest
+    if: needs.check-tag.outputs.valid == 'true'
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+      - uses: ./.github/actions/setup-gradle
+      - name: Inject keystore.properties
+        run: |
+          echo "${{ secrets.KEYSTORE_PROPERTIES }}" | base64 -d > ./keystore.properties
+      - name: Inject keystore.jks
+        run: |
+          echo "${{ secrets.SIGNING_KEY }}" | base64 -d > ./keystore.jks
+      - name: Check keystore file integrity
+        run: |
+          stat ./keystore.jks
+          sha256sum keystore.jks
+          stat ./keystore.properties
+          sha256sum keystore.properties
+      - name: Build Signed APK
+        run: ./gradlew assembleSignedRelease
+      - name: Cleanup keystore files
+        if: always()
+        run: rm -f keystore.jks keystore.properties
+      - name: Copy Signed APK to root and rename
+        run: |
+          APK_PATH="app/build/outputs/apk/signedRelease/app-signedRelease.apk"
+          if [ -f "$APK_PATH" ]; then
+            DEST="MiniStock-release-signed-${{ github.ref_name }}.apk"
+            cp "$APK_PATH" "./$DEST"
+            echo "APK copied to $DEST"
+          else
+            echo "::error::Signed APK not found at $APK_PATH"
+            ls -R app/build/outputs/apk
+            exit 1
+          fi
+      - name: Upload Signed APK artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: MiniStock-release-signed-${{ github.ref_name }}
+          path: ./MiniStock-release-signed-${{ github.ref_name }}.apk
+          if-no-files-found: error
+
+
+  # Publish release
+  publish-release:
+    permissions:
+      contents: write
+    needs: release-signed
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+      - name: Extract tag name
+        run: echo "TAG_NAME=${{ github.ref_name }}" >> $GITHUB_ENV
+      - name: Make dir
+        run: |
+          mkdir -p artifacts
+      - name: Download release artifacts
+        uses: actions/download-artifact@v5
+        with:
+          name: MiniStock-release-signed-${{ env.TAG_NAME }}
+          path: artifacts/
+      - name: Parse version number
+        run: |
+          TAG_NAME=${{ github.ref_name }}
+          VERSION_CODE=$(grep -E '^\s*versionCode\s+[0-9]+' app/build.gradle | awk '{print $2}' | tr -d '\n')
+          if [ -z "$VERSION_CODE" ]; then
+            echo "::error::versionCode not found"
+            exit 1
+          fi
+          echo "VERSION_NUMBER=${TAG_NAME#v}" >> $GITHUB_ENV
+          echo "CHANGELOG_FILE=changelogs/${VERSION_CODE}.txt" >> $GITHUB_ENV
+      - name: Read changelog content
+        id: changelog
+        run: |
+          if [ ! -f "$CHANGELOG_FILE" ]; then
+            echo "::error::Changelog file not found: $CHANGELOG_FILE"
+            exit 1
+          fi
+          CONTENT=$(cat "$CHANGELOG_FILE")
+          printf "content<<EOF\n# Changelog\n%s\nEOF\n" "$CONTENT" >> $GITHUB_OUTPUT
+      - name: Create GitHub Release
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: ${{ env.TAG_NAME }}
+          name: Version ${{ env.VERSION_NUMBER }}
+          body: ${{ steps.changelog.outputs.content }}
+          token: ${{ secrets.GITHUB_TOKEN }}
+          make_latest: true
+          prerelease: false
+          fail_on_unmatched_files: true
+          files: |
+            artifacts/MiniStock-release-signed-${{ env.TAG_NAME }}.apk

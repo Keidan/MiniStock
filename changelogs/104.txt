@@ -1,0 +1,2 @@
+* Add the ability to search for an element by its title
+* Update API versions
