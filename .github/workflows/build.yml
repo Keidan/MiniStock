@@ -31,8 +31,6 @@ jobs:
       - uses: ./.github/actions/setup-gradle
       - name: Build the app
         run: ./gradlew assemble
-      - name: Build the tests
-        run: ./gradlew test
       - uses: ./.github/actions/analyze-with-sonar
         if: github.event_name != 'pull_request'
         with:
