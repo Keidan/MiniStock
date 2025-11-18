@@ -170,11 +170,6 @@ public class DBSocketThread extends Thread {
     URL url = new URL("https://" + host + ":" + port + page);
     HttpsURLConnection connection = (HttpsURLConnection) url.openConnection();
     fillDefaultConnection(connection);
-    StringBuilder sbHost = new StringBuilder();
-    if (host.startsWith("www."))
-      sbHost.append(host.substring("www.".length()));
-    else
-      sbHost.append(host);
     connection.setSSLSocketFactory((SSLSocketFactory) SSLSocketFactory.getDefault());
     return connection;
   }
