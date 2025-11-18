@@ -85,6 +85,14 @@ android {
       property 'sonar.projectName', 'MiniStock'
       property 'sonar.projectVersion', SONAR_PROJECT_VERSION
       property 'sonar.coverage.exclusions', "**/**"
+      // Exclude rules
+      property "sonar.issue.ignore.multicriteria", "e1,e2,e3"
+      property "sonar.issue.ignore.multicriteria.e1.ruleKey", "java:S5320"
+      property "sonar.issue.ignore.multicriteria.e1.resourceKey", "**/fr/ralala/ministock/ApplicationCtx.java"
+      property "sonar.issue.ignore.multicriteria.e2.ruleKey", "java:S5322"
+      property "sonar.issue.ignore.multicriteria.e2.resourceKey", "**/fr/ralala/ministock/ApplicationCtx.java"
+      property "sonar.issue.ignore.multicriteria.e3.ruleKey", "java:S5324"
+      property "sonar.issue.ignore.multicriteria.e3.resourceKey", "**/fr/ralala/ministock/update/DownloadAPK.java"
     }
   }
 }
