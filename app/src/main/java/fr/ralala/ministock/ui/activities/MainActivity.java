@@ -14,6 +14,7 @@ import android.view.View;
 import android.widget.SearchView;
 import android.widget.Toast;
 
+import androidx.activity.OnBackPressedCallback;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -65,6 +66,13 @@ public class MainActivity extends AppCompatActivity implements SwipeEditDeleteRe
   protected void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
     setContentView(R.layout.activity_main);
+
+    getOnBackPressedDispatcher().addCallback(this, new OnBackPressedCallback(true) {
+      @Override
+      public void handleOnBackPressed() {
+        back();
+      }
+    });
     mCollator = Collator.getInstance();
     mCollator.setStrength(Collator.PRIMARY);
     mApp = (ApplicationCtx) getApplication();
@@ -220,16 +228,11 @@ public class MainActivity extends AppCompatActivity implements SwipeEditDeleteRe
 
   /**
    * Called to handle the click on the back button.
-   *
-   * @deprecated For the moment I continue with this.
    */
-  @Deprecated
-  @Override
-  @SuppressWarnings("squid:S1133")
-  public void onBackPressed() {
+  public void back() {
     hideSearch();
     if (mLastBackPressed + BACK_TIME_DELAY > System.currentTimeMillis()) {
-      super.onBackPressed();
+      finish();
       return;
     } else {
       Toast.makeText(this, R.string.on_double_back_exit_text, Toast.LENGTH_SHORT).show();
