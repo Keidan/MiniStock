@@ -157,14 +157,21 @@ if (strlen($json_params) > 0 && isValidJSON($json_params))
           else if (strcmp($action, "FIND") == 0)
           {
             $title = addslashes($json_data[$colTitle]);
-            $cursor = $mysqli->query("SELECT * FROM `$table` WHERE `$colTitle` = '$title' LIMIT 1");
+            if ($rangeMin > 0 && $rangeCount > 0)
+            {
+              $cursor = $mysqli->query("SELECT * FROM `$table` WHERE `$colTitle` = '$title' LIMIT $rangeMin, $rangeCount");
+            }
+            else
+            {
+              $cursor = $mysqli->query("SELECT * FROM `$table` WHERE `$colTitle` = '$title'  LIMIT 1");
+            }
             if (!$cursor)
             {
               echo response(501, "error", "Unable to execute the SQL request: " . $mysqli->error);
             }
             else
             {
-              $index = 0;
+              $index = $rangeMin;
               $items = "";
               while ($data = $cursor->fetch_assoc())
               {
