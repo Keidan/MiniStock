@@ -4,7 +4,7 @@ plugins {
 }
 
 final COMPILE_WITH_DEPRECATION_LINT = false
-final SONAR_PROJECT_VERSION = '1.5'
+final SONAR_PROJECT_VERSION = '1.6'
 
 // Load signing config only if needed
 def signingEnabled = gradle.startParameter.taskNames.any { it.toLowerCase().contains("signedrelease") }
@@ -20,8 +20,8 @@ android {
     minSdk 29
     //noinspection OldTargetApi
     targetSdk 33
-    versionCode 105
-    versionName "1.5"
+    versionCode 106
+    versionName "1.6"
     vectorDrawables {
       useSupportLibrary true
     }
